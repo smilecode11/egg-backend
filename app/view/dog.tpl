@@ -7,5 +7,6 @@
         <p>{{ dogUrl }}</p>
         <h1>{{ title }}</h1>
         <img src="{{ dogUrl }}"/>
+        <img src="{{ dogInfo.message }}"/>
     </body>
 </html>
