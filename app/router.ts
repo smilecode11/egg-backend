@@ -3,8 +3,13 @@ import { Application } from 'egg';
 export default (app: Application) => {
   const { controller, router } = app;
 
+  const myLogger = app.middleware.mineLogger({
+    allowMethods: 'GET',
+  }, app);
+
   router.get('/', controller.home.index);
   router.get('/test/:id', controller.test.index);
   router.post('/test/:id', controller.test.index);
-  router.get('/dog', controller.test.getDogImage);
+  //  路由中配置使用中间件
+  router.get('/dog', myLogger, controller.test.getDogImage);
 };

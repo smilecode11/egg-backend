@@ -20,7 +20,6 @@ export default class TestController extends Controller {
       dogUrl: resp.message,
       title: '模板引擎使用示例',
     };
-    console.log('_pageData', pageData);
     await ctx.render('dog.tpl', pageData);
   }
 

@@ -8,7 +8,7 @@ export default (appInfo: EggAppInfo) => {
   config.keys = appInfo.name + '_1669160533114_8306';
 
   // add your egg config in here
-  config.middleware = [];
+  config.middleware = [ 'mineLogger' ];
 
   config.security = {
     csrf: {
@@ -26,6 +26,9 @@ export default (appInfo: EggAppInfo) => {
   // add your special config in here
   const bizConfig = {
     sourceUrl: `https://github.com/eggjs/examples/tree/master/${appInfo.name}`,
+    mineLogger: {
+      allowMethods: [ 'POST' ],
+    },
   };
 
   // the return config will combines to EggAppConfig
