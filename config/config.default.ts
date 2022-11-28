@@ -33,7 +33,7 @@ export default (appInfo: EggAppInfo) => {
 
   // the return config will combines to EggAppConfig
   return {
-    ...config,
+    ...config as {}, //  修改 config 不确定的类型, 设置为 {} , 让配置文件更好地在 controller 或 service 中得到联想
     ...bizConfig,
   };
 };
