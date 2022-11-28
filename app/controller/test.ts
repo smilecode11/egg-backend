@@ -14,8 +14,14 @@ export default class TestController extends Controller {
   async getDogImage() {
     const { service, ctx } = this;
     const resp = await service.dog.show();
-    ctx.body = resp.message;
-    ctx.status = 200;
+    // ctx.body = resp.message;
+    // ctx.status = 200;
+    const pageData = {
+      dogUrl: resp.message,
+      title: '模板引擎使用示例',
+    };
+    console.log('_pageData', pageData);
+    await ctx.render('dog.tpl', pageData);
   }
 
 }

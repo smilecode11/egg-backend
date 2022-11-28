@@ -18,6 +18,9 @@ export default (appInfo: EggAppInfo) => {
 
   config.view = {
     defaultViewEngine: 'nunjucks',
+    mapping: {
+      '.tpl': 'nunjucks',
+    },
   };
 
   // add your special config in here
