@@ -16,6 +16,20 @@ export default (appInfo: EggAppInfo) => {
     },
   };
 
+  config.mongoose = {
+    url: 'mongodb://127.0.0.1:27017',
+    options: {
+      dbName: 'mongoTest2',
+      user: 'root',
+      pass: '123456',
+    },
+  };
+
+  config.validate = {
+    // convert: false,
+    // validateRoot: false,
+  };
+
   config.view = {
     defaultViewEngine: 'nunjucks',
     mapping: {

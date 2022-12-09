@@ -12,4 +12,9 @@ export default (app: Application) => {
   router.post('/test/:id', controller.test.index);
   //  路由中配置使用中间件
   router.get('/dog', myLogger, controller.test.getDogImage);
+
+
+  //  用户相关
+  router.post('/api/users/create', controller.user.createByEmail);
+  router.get('/api/users/:id', controller.user.getUserById);
 };

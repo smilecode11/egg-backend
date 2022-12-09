@@ -9,8 +9,8 @@ export default (options: EggAppConfig['mineLogger'], app: Application) => {
     await next();
     const ms = Date.now() - startTime;
     const logTime = `${requestTime} -- ${ctx.method} -- ${ctx.url} -- ${ms}ms`;
-    console.log('_options', options, '_method', ctx.method);
-    console.log(options.allowMethods.includes(ctx.method));
+    // console.log('_options', options, '_method', ctx.method);
+    // console.log(options.allowMethods.includes(ctx.method));
     if (options.allowMethods.includes(ctx.method)) {
       appendFileSync('./log.txt', logTime + '\n');
     }
