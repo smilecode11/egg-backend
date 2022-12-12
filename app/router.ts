@@ -4,7 +4,7 @@ export default (app: Application) => {
   const { controller, router } = app;
 
   const myLogger = app.middleware.mineLogger({
-    allowMethods: 'GET',
+    allowMethods: [ 'GET' ],
   }, app);
 
   router.get('/', controller.home.index);
@@ -18,4 +18,5 @@ export default (app: Application) => {
   router.post('/api/users/create', controller.user.createByEmail);
   router.get('/api/users/:id', controller.user.getUserById);
   router.post('/api/users/loginByEmail', controller.user.loginByEmail);
+  router.post('/api/users/current', controller.user.current);
 };

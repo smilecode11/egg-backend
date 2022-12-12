@@ -49,17 +49,27 @@ export default class UserController extends Controller {
   /** 用户登录 - 邮箱*/
   async loginByEmail() {
     const { ctx, service } = this;
-    //  1. 检查输入
     const errors = this.validateUserInput();
     if (errors) return ctx.helper.fail({ ctx, errorType: 'inputValidateFail', error: errors });
-    //  2. 检查用户是否存在
     const { username, password } = ctx.request.body;
     const user = await service.user.findByUsername(username);
     if (!user) return ctx.helper.fail({ ctx, errorType: 'loginCheckFail' });
-    //  3. 验证密码是否正确 - bcrypt.compare
     const verifyPwd = await ctx.compare(password, user.password);
     if (!verifyPwd) return ctx.helper.fail({ ctx, errorType: 'loginCheckFail' });
+    //  设置 cookie, encrypt 属性表示对 cookie 进行加密
+    // ctx.cookies.set('username', user.username, { encrypt: true });
+    //  设置 session
+    ctx.session.username = user.username;
     ctx.helper.success({ ctx, res: user, msg: '登录成功' });
+  }
+
+  async current() {
+    const { ctx } = this;
+    //  加密的 cookie 进行访问, 也必须添加 encrypt 属性
+    // const username = ctx.cookies.get('username', { encrypt: true });
+    const { username } = ctx.session;
+    if (!username) return ctx.helper.fail({ ctx, errorType: 'loginCheckFail' });
+    ctx.helper.success({ ctx, res: { username } });
   }
 
   async getUserById() {
