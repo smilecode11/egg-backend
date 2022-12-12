@@ -17,4 +17,5 @@ export default (app: Application) => {
   //  用户相关
   router.post('/api/users/create', controller.user.createByEmail);
   router.get('/api/users/:id', controller.user.getUserById);
+  router.post('/api/users/loginByEmail', controller.user.loginByEmail);
 };

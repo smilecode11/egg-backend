@@ -7,25 +7,36 @@ const userCreateByEmailRules = {
 };
 
 export const userErrorMessage = {
-  createUserValidateFail: {
+  inputValidateFail: {
     errno: 101001,
-    message: '创建用户验证失败',
+    message: '输入信息验证失败',
   },
   createUserExistsFail: {
     errno: 101002,
     message: '用户已存在, 请直接登录',
   },
+  loginCheckFail: {
+    errno: 101003,
+    message: '用户名或密码验证失败',
+  },
 };
 
 export default class UserController extends Controller {
-  async createByEmail() {
-    const { service, ctx, app } = this;
-    //  第一种, 直接使用, 验证不通过会直接抛出
-    // ctx.validate(userCreateByEmailRules);
-    // 第二种, 通过 app.validator.validate 对数据进行验证
+  /** 验证输入数据是否正确*/
+  validateUserInput() {
+    const { ctx, app } = this;
+    //  通过 app.validator.validate 对数据进行验证
     const errors = app.validator.validate(userCreateByEmailRules, ctx.request.body);
+    ctx.logger.warn(errors);
+    return errors;
+  }
+
+  /** 通过邮箱创建用户*/
+  async createByEmail() {
+    const { service, ctx } = this;
+    const errors = this.validateUserInput();
     if (errors) {
-      return ctx.helper.fail({ ctx, errorType: 'createUserValidateFail', error: errors });
+      return ctx.helper.fail({ ctx, errorType: 'inputValidateFail', error: errors });
     }
     const user = await service.user.findByUsername(ctx.request.body.username);
     if (user) {
@@ -33,6 +44,22 @@ export default class UserController extends Controller {
     }
     const userData = await service.user.createByEmail(ctx.request.body);
     ctx.helper.success({ ctx, res: userData });
+  }
+
+  /** 用户登录 - 邮箱*/
+  async loginByEmail() {
+    const { ctx, service } = this;
+    //  1. 检查输入
+    const errors = this.validateUserInput();
+    if (errors) return ctx.helper.fail({ ctx, errorType: 'inputValidateFail', error: errors });
+    //  2. 检查用户是否存在
+    const { username, password } = ctx.request.body;
+    const user = await service.user.findByUsername(username);
+    if (!user) return ctx.helper.fail({ ctx, errorType: 'loginCheckFail' });
+    //  3. 验证密码是否正确 - bcrypt.compare
+    const verifyPwd = await ctx.compare(password, user.password);
+    if (!verifyPwd) return ctx.helper.fail({ ctx, errorType: 'loginCheckFail' });
+    ctx.helper.success({ ctx, res: user, msg: '登录成功' });
   }
 
   async getUserById() {

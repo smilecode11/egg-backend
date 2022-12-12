@@ -10,6 +10,7 @@ export default (appInfo: EggAppInfo) => {
   // add your egg config in here
   config.middleware = [ 'mineLogger' ];
 
+  //  跨域
   config.security = {
     csrf: {
       enable: false,
@@ -25,16 +26,23 @@ export default (appInfo: EggAppInfo) => {
     },
   };
 
+  //  验证
   config.validate = {
     // convert: false,
     // validateRoot: false,
   };
 
+  //  模板
   config.view = {
     defaultViewEngine: 'nunjucks',
     mapping: {
       '.tpl': 'nunjucks',
     },
+  };
+
+  // 加密
+  config.bcrypt = {
+    saltRounds: 10,
   };
 
   // add your special config in here

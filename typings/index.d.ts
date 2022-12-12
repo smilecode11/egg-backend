@@ -12,4 +12,16 @@ declare module 'egg' {
     interface Application {
         mongoose: Connection
     }
+
+    interface Context {
+        //  egg-bcrypt 扩展
+        genHash(plaintext: string): Promise<string>,
+        compare(plainText: string, hash: string): Promise<boolean>
+    }
+
+    interface EggAppConfig {
+        bcrypt: {
+            saltRounds: number;
+        }
+    }
 }
