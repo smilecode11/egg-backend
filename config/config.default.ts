@@ -7,8 +7,8 @@ export default (appInfo: EggAppInfo) => {
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1669160533114_8306';
 
-  // add your egg config in here
-  config.middleware = [ 'mineLogger' ];
+  //  全局启用中间件
+  config.middleware = [ 'mineLogger', 'mineError' ];
 
   //  跨域
   config.security = {
@@ -45,11 +45,18 @@ export default (appInfo: EggAppInfo) => {
     saltRounds: 10,
   };
 
+  config.jwt = {
+    secret: 'smile.jsonwebtoken',
+  };
+
   // add your special config in here
   const bizConfig = {
     sourceUrl: `https://github.com/eggjs/examples/tree/master/${appInfo.name}`,
     mineLogger: {
       allowMethods: [ 'POST' ],
+    },
+    mineJwt: { //  jwt.secret 加密串
+      secret: 'mine.smile.jsonwebtoken',
     },
   };
 

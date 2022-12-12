@@ -1,4 +1,5 @@
 import { Controller } from 'egg';
+// import * as jwt from 'jsonwebtoken';
 
 //  声明通过邮箱用户创建规则
 const userCreateByEmailRules = {
@@ -18,6 +19,10 @@ export const userErrorMessage = {
   loginCheckFail: {
     errno: 101003,
     message: '用户名或密码验证失败',
+  },
+  loginValidateFail: {
+    errno: 101004,
+    message: '用户验证失败',
   },
 };
 
@@ -48,7 +53,8 @@ export default class UserController extends Controller {
 
   /** 用户登录 - 邮箱*/
   async loginByEmail() {
-    const { ctx, service } = this;
+    console.log('_loginByEmail');
+    const { ctx, service, app } = this;
     const errors = this.validateUserInput();
     if (errors) return ctx.helper.fail({ ctx, errorType: 'inputValidateFail', error: errors });
     const { username, password } = ctx.request.body;
@@ -56,20 +62,59 @@ export default class UserController extends Controller {
     if (!user) return ctx.helper.fail({ ctx, errorType: 'loginCheckFail' });
     const verifyPwd = await ctx.compare(password, user.password);
     if (!verifyPwd) return ctx.helper.fail({ ctx, errorType: 'loginCheckFail' });
-    //  设置 cookie, encrypt 属性表示对 cookie 进行加密
-    // ctx.cookies.set('username', user.username, { encrypt: true });
-    //  设置 session
-    ctx.session.username = user.username;
-    ctx.helper.success({ ctx, res: user, msg: '登录成功' });
+    //  1. 登录成功, 生成 token 返回
+    // const token = jwt.sign({ username }, app.config.mineJwt.secret, { expiresIn: 60 * 60 });
+
+    //  egg-jwt 在 app 上添加了 jwt 对象
+    const token = app.jwt.sign({ username }, app.config.jwt.secret, { expiresIn: 60 * 60 });
+    ctx.helper.success({ ctx, res: { token }, msg: '登录成功' });
+  }
+
+  /** 获取 token, 存储位置 - header Authorization, 存储格式 - Bearer xxxx */
+  getTokenValue() {
+    const { ctx } = this;
+    const { authorization } = ctx.header;
+    if (!ctx.header || !authorization) return false;
+    if (typeof authorization === 'string') {
+      const parts = authorization.trim().split(' ');
+      if (parts.length === 2) {
+        const scheme = parts[0];
+        const credentials = parts[1];
+        if (/^Bearer$/i.test(scheme)) {
+          return credentials;
+        }
+      } else {
+        return false;
+      }
+    }
   }
 
   async current() {
-    const { ctx } = this;
-    //  加密的 cookie 进行访问, 也必须添加 encrypt 属性
-    // const username = ctx.cookies.get('username', { encrypt: true });
-    const { username } = ctx.session;
-    if (!username) return ctx.helper.fail({ ctx, errorType: 'loginCheckFail' });
-    ctx.helper.success({ ctx, res: { username } });
+    const { ctx, service } = this;
+    //  2. 获取头部存储的 token
+    // const token = this.getTokenValue();
+    // if (!token) return ctx.helper.fail({ ctx, errorType: 'loginValidateFail' });
+    // try {
+    //   //  3. 验证 token
+    //   const decoded = jwt.verify(token, app.config.jwt.secret);
+    //   ctx.helper.success({ ctx, res: decoded });
+    // } catch (error) {
+    //   ctx.helper.fail({ ctx, errorType: 'loginValidateFail' });
+    // }
+    //  编写的 mineJwt 中间件把 解密处理来的信息保存到了 ctx.state 中, 这里我们直接取
+    const { user } = ctx.state;
+    const userData = await service.user.findByUsername(user.username);
+    if (!userData) return ctx.helper.fail({ ctx, errorType: 'loginCheckFail' });
+    ctx.helper.success({ ctx, res: userData });
+  }
+
+  async current2() {
+    const { ctx, service } = this;
+    //  egg-jwt 存储数据也是在 ctx.state 上, 和我们自己写的 mineJwt 一样
+    const { user } = ctx.state;
+    const userData = await service.user.findByUsername(user.username);
+    if (!userData) return ctx.helper.fail({ ctx, errorType: 'loginCheckFail' });
+    ctx.helper.success({ ctx, res: userData });
   }
 
   async getUserById() {

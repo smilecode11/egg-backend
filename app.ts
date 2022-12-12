@@ -8,7 +8,7 @@ export default class AppBoot implements IBoot {
 
   configWillLoad() {
     //  此时 config 文件已经被读取, 但是未生效
-    console.log('enable middleware', this.app.config.coreMiddleware);
+    // console.log('enable middleware', this.app.config.coreMiddleware);
     //  * 这是应用修改配置的最后时机
     // this.app.config.coreMiddleware.unshift('mineLogger');
   }
