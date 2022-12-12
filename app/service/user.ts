@@ -6,13 +6,30 @@ export default class UserService extends Service {
   public async createByEmail(payload: UserProps) {
     const { ctx } = this;
     const { username, password } = payload;
-    const passwordHash = await ctx.genHash(password); //  创建用户时, 密码加密后存储
+    const passwordHash = await ctx.genHash(password as string); //  创建用户时, 密码加密后存储
     const UserCreateData: Partial<UserProps> = {
       username,
       password: passwordHash,
       email: username,
     };
     return this.ctx.model.User.create(UserCreateData);
+  }
+
+  /** 通过手机登录*/
+  async loginByCellphone(cellphone: string) {
+    const { ctx, app } = this;
+    // 检查用户是否存在 -> 注册/登录 => token
+    const user = await this.findByUsername(cellphone);
+    if (user) return app.jwt.sign({ username: user.username }, app.config.jwt.secret, { expiresIn: 60 * 60 });
+    //  不存在 -> 新建用户注册返回 token
+    const userCreateData: Partial<UserProps> = {
+      username: cellphone,
+      phoneNumber: cellphone,
+      nickName: `乐高${cellphone.slice(-4)}`,
+      type: 'cellphone',
+    };
+    const newUser = await ctx.model.User.create(userCreateData);
+    return app.jwt.sign({ username: newUser.username }, app.config.jwt.secret, { expiresIn: 60 * 60 });
   }
 
   /** 通过 id 查找用户*/
