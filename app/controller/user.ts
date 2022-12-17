@@ -45,6 +45,10 @@ export const userErrorMessage = {
     errno: 101006,
     message: '验证码错误',
   },
+  loginByGiteeCheckFail: {
+    errno: 101008,
+    message: 'gitee 授权失败',
+  },
 };
 
 export default class UserController extends Controller {
@@ -183,5 +187,27 @@ export default class UserController extends Controller {
     const { ctx, service } = this;
     const userData = await service.user.findById(ctx.params.id);
     ctx.helper.success({ ctx, res: userData });
+  }
+
+
+  /** gitee auth 授权*/
+  //  授权页面访问
+  async giteeOauth() {
+    const { app, ctx } = this;
+    const { cid, redirectURL } = app.config.giteeOauthConfig;
+    ctx.redirect(`https://gitee.com/oauth/authorize?client_id=${cid}&redirect_uri=${redirectURL}&response_type=code`);
+  }
+
+  async oauthByGitee() {
+    const { ctx, app } = this;
+    const { code } = ctx.request.query;
+    try {
+      const token = await ctx.service.user.loginByGitee(code);
+      app.logger.info('oathByGitee', token);
+      //  渲染模板文件, 处理 token 发送
+      await ctx.render('oauth_success.tpl', { token });
+    } catch (error) {
+      ctx.helper.fail({ ctx, errorType: 'loginByGiteeCheckFail' });
+    }
   }
 }

@@ -9,7 +9,9 @@ export interface UserProps {
   nickName?: string;
   picture?: string;
   phoneNumber?: string;
-  type: 'email' | 'cellphone'; //  区分用户注册方式
+  type: 'email' | 'cellphone' | 'oath'; //  区分用户注册方式
+  provider?: 'gitee' | 'weixin', //  授权源
+  oauthID?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -24,6 +26,8 @@ function initUserModel(app: Application) {
     picture: { type: String },
     phoneNumber: { type: String },
     type: { type: String, default: 'email' },
+    oauthID: { type: String },
+    provider: { type: String, default: '' },
   }, {
     collection: 'users',
     timestamps: true, // 自动更新 Date 属性

@@ -77,6 +77,19 @@ export default (appInfo: EggAppInfo) => {
     },
   };
 
+  config.cors = {
+    origin: 'http://localhost:8080',
+    allowMethods: 'GET,HEAD,PUT,OPTIONS,POST,DELETE,PATCH',
+  };
+
+  const giteeOauthConfig = {
+    cid: process.env.GITEE_CID,
+    secret: process.env.GITEE_SECRET,
+    redirectURL: 'http://127.0.0.1:7001/api/users/passport/gitee/callback',
+    authURL: 'https://gitee.com/oauth/token?grant_type=authorization_code',
+    giteeUserAPI: 'https://gitee.com/api/v5/user',
+  };
+
   // add your special config in here
   const bizConfig = {
     sourceUrl: `https://github.com/eggjs/examples/tree/master/${appInfo.name}`,
@@ -87,6 +100,7 @@ export default (appInfo: EggAppInfo) => {
       secret: 'mine.smile.jsonwebtoken',
     },
     aliCloudConfig,
+    giteeOauthConfig,
   };
 
   // the return config will combines to EggAppConfig

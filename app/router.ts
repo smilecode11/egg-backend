@@ -24,5 +24,8 @@ export default (app: Application) => {
   router.post('/api/users/loginByCellphone', controller.user.loginByCellphone);
   router.post('/api/users/current', mineJwt, controller.user.current);
   router.post('/api/users/current2', jwt, controller.user.current2);
+  // gitee 授权
+  router.get('/api/users/passport/gitee', controller.user.giteeOauth);
+  router.get('/api/users/passport/gitee/callback', controller.user.oauthByGitee);
 
 };
