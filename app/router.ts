@@ -28,4 +28,6 @@ export default (app: Application) => {
   router.get('/api/users/passport/gitee', controller.user.giteeOauth);
   router.get('/api/users/passport/gitee/callback', controller.user.oauthByGitee);
 
+  //  作品相关
+  router.post('/api/works', jwt, controller.work.createEmptyWork);
 };

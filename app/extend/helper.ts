@@ -1,9 +1,10 @@
 import { Context } from 'egg';
 import { userErrorMessage } from '../controller/user';
+import { workErrorMessages } from '../controller/work';
 
 
-export type GlobalErrorTypes = keyof (typeof userErrorMessage & {});
-export const globalErrorMessages = { ...userErrorMessage };
+export type GlobalErrorTypes = keyof (typeof userErrorMessage & typeof workErrorMessages & {});
+export const globalErrorMessages = { ...userErrorMessage, ...workErrorMessages };
 
 interface RespType {
   ctx: Context;

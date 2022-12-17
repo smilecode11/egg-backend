@@ -87,10 +87,7 @@ export default class UserController extends Controller {
     const verifyPwd = await ctx.compare(password, user.password as string);
     if (!verifyPwd) return ctx.helper.fail({ ctx, errorType: 'loginCheckFail' });
     //  1. 登录成功, 生成 token 返回
-    const token = jwt.sign({ username }, app.config.mineJwt.secret, { expiresIn: 60 * 60 });
-
-    //  egg-jwt 在 app 上添加了 jwt 对象
-    // const token = app.jwt.sign({ username }, app.config.jwt.secret, { expiresIn: 60 * 60 });
+    const token = jwt.sign({ username, _id: user._id }, app.config.jwt.secret, { expiresIn: 60 * 60 });
     ctx.helper.success({ ctx, res: { token }, msg: '登录成功' });
   }
 

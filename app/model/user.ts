@@ -9,7 +9,7 @@ export interface UserProps {
   nickName?: string;
   picture?: string;
   phoneNumber?: string;
-  type: 'email' | 'cellphone' | 'oath'; //  区分用户注册方式
+  type: 'email' | 'cellphone' | 'oauth'; //  区分用户注册方式
   provider?: 'gitee' | 'weixin', //  授权源
   oauthID?: string;
   createdAt: Date;
