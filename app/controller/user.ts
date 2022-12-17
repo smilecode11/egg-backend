@@ -37,6 +37,10 @@ export const userErrorMessage = {
     errno: 101005,
     message: '请勿频繁获取短信验证码',
   },
+  sendVeriCodeFail: {
+    errno: 101007,
+    message: '发送验证码失败',
+  },
   loginByCellphoneCheckFail: {
     errno: 101006,
     message: '验证码错误',
@@ -99,9 +103,17 @@ export default class UserController extends Controller {
     if (preVeriCode) return ctx.helper.fail({ ctx, errorType: 'sendVeriCodeFrequentlyFail' });
     //  2.2 不存在, 生成验证码, 并返回验证码
     const veriCode = Math.floor((Math.random() * 9000 + 1000));
+    //  ***** 生产环境, 调用阿里云短信服务发送验证码 *******
+    if (app.config.env === 'prod') {
+      const resp = await ctx.service.user.sendSMS(phoneNumber, veriCode as unknown as string);
+      if (resp.body.code !== 'ok') {
+        return ctx.helper.fail({ ctx, errorType: 'sendVeriCodeFail' });
+      }
+    }
     //  2.2.1 存储到 redis, 过期时间设置为 60s 并返回验证码
     await app.redis.set(`phoneVeriCode-${phoneNumber}`, veriCode, 'ex', 60);
-    ctx.helper.success({ ctx, res: { veriCode } });
+    //  **** 本地开发, 直接返回 veriCode
+    ctx.helper.success({ ctx, res: app.config.env === 'prod' ? null : { veriCode }, msg: '验证码发送成功' });
   }
 
   /** 用户登录 - 手机验证码*/

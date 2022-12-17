@@ -1,6 +1,6 @@
 import { Service } from 'egg';
+import * as $Dysmsapi from '@alicloud/dysmsapi20170525';
 import { UserProps } from '../model/user';
-
 export default class UserService extends Service {
   /** 通过邮箱新建用户*/
   public async createByEmail(payload: UserProps) {
@@ -32,6 +32,19 @@ export default class UserService extends Service {
     return app.jwt.sign({ username: newUser.username }, app.config.jwt.secret, { expiresIn: 60 * 60 });
   }
 
+  /** 阿里 SMS 短信发送服务*/
+  async sendSMS(phoneNumber: string, veriCode: string) {
+    const { app } = this;
+    const sendSMSRequest = new $Dysmsapi.SendSmsRequest({
+      signName: '阿里云短信测试',
+      phoneNumbers: phoneNumber,
+      templateCode: 'SMS_243940007',
+      templateParam: `{\"code\":\"${veriCode}\"}`,
+    });
+    const resp = await app.ALClient.sendSms(sendSMSRequest);
+    return resp;
+  }
+
   /** 通过 id 查找用户*/
   async findById(id: string) {
     const result = await this.ctx.model.User.findById(id);
@@ -39,6 +52,8 @@ export default class UserService extends Service {
       return result;
     }
   }
+
+  /** 通过 username 查找用户*/
   async findByUsername(username: string) {
     return this.ctx.model.User.findOne({ username });
   }

@@ -1,5 +1,9 @@
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg';
 
+// 使用 dotenv, 在文件中读取环境变量
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 export default (appInfo: EggAppInfo) => {
   const config = {} as PowerPartial<EggAppConfig>;
 
@@ -58,6 +62,21 @@ export default (appInfo: EggAppInfo) => {
     secret: 'smile.jsonwebtoken',
   };
 
+  const aliCloudConfig = {
+    accessKeyId: process.env.ALC_ACCESS_KEY,
+    accessKeySecret: process.env.ALC_SECRET_KEY,
+    endpoint: 'dysmsapi.aliyuncs.com',
+  };
+
+  config.oss = {
+    client: {
+      accessKeyId: process.env.ALC_ACCESS_KEY,
+      accessKeySecret: process.env.ALC_SECRET_KEY,
+      bucket: 'smile-backend',
+      endpoint: 'oss-cn-hangzhou.aliyuncs.com',
+    },
+  };
+
   // add your special config in here
   const bizConfig = {
     sourceUrl: `https://github.com/eggjs/examples/tree/master/${appInfo.name}`,
@@ -67,6 +86,7 @@ export default (appInfo: EggAppInfo) => {
     mineJwt: { //  jwt.secret 加密串
       secret: 'mine.smile.jsonwebtoken',
     },
+    aliCloudConfig,
   };
 
   // the return config will combines to EggAppConfig

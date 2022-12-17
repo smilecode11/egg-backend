@@ -155,3 +155,6 @@ Mon Dec 12 2022 16:37:21 GMT+0800 (中国标准时间) -- POST -- /api/users/cur
 Mon Dec 12 2022 16:37:30 GMT+0800 (中国标准时间) -- POST -- /api/users/current -- 1ms
 Mon Dec 12 2022 16:38:07 GMT+0800 (中国标准时间) -- POST -- /api/users/current -- 3ms
 Mon Dec 12 2022 16:38:23 GMT+0800 (中国标准时间) -- POST -- /api/users/current2 -- 14ms
+Mon Dec 12 2022 18:01:20 GMT+0800 (中国标准时间) -- POST -- /api/users/getVeriCode -- 5ms
+Mon Dec 12 2022 18:01:23 GMT+0800 (中国标准时间) -- POST -- /api/users/getVeriCode -- 1ms
+Mon Dec 12 2022 18:01:31 GMT+0800 (中国标准时间) -- POST -- /api/users/getVeriCode -- 1ms
