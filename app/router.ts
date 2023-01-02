@@ -30,4 +30,6 @@ export default (app: Application) => {
 
   //  作品相关
   router.post('/api/works', jwt, controller.work.createEmptyWork);
+  router.get('/api/templates', controller.work.getTemplateList);
+  router.get('/api/works', jwt, controller.work.myList);
 };
