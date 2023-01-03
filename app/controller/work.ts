@@ -1,26 +1,6 @@
 import { Controller } from 'egg';
 import inputValidate from '../decorator/inputValidate';
 
-// type Page = 'home' | 'about';
-
-// interface PageInfo {
-//   title?: string;
-//   descr?: string;
-// }
-
-// const nav: { [K in Page]: PageInfo } = {
-//   home: { title: '家' },
-//   about: { title: 'about', descr: '关于' },
-// };
-
-// const nav2: Record<Page, PageInfo> = {
-//   home: { title: '家 2' },
-//   about: { title: 'about', descr: '关于' },
-// };
-
-// nav;
-// nav2;
-
 const workCreateRules = {
   title: 'string',
 };
@@ -29,6 +9,10 @@ export const workErrorMessages = {
   workValidateFail: {
     errno: 101001,
     message: '输入信息验证失败',
+  },
+  workNoPermissionFail: {
+    errno: 101002,
+    message: '没有权限',
   },
 };
 
@@ -42,19 +26,11 @@ export interface IndexCondition {
 }
 
 export default class WorkController extends Controller {
-  // private validateUserInput(rules: any) {
-  //   const { ctx, app } = this;
-  //   const errors = app.validator.validate(rules, ctx.request.body);
-  //   ctx.logger.warn(errors);
-  //   return errors;
-  // }
 
   /** 创建一个作品*/
   @inputValidate(workCreateRules, 'workValidateFail')
   async createEmptyWork() {
     const { ctx, service } = this;
-    // const errors = this.validateUserInput(workCreateRules);
-    // if (errors) return ctx.helper.fail({ ctx, errorType: 'workValidateFail' });
     const workData = await service.work.createEmptyWork(ctx.request.body);
     ctx.helper.success({ ctx, res: workData });
   }
@@ -96,6 +72,37 @@ export default class WorkController extends Controller {
       ...(pageSize && { pageSize: parseInt(pageSize) }),
     };
     const res = await ctx.service.work.getList(listCondition);
+    ctx.helper.success({ ctx, res });
+  }
+
+  /** 验证修改权限*/
+  async checkPermission(id: number) {
+    const { ctx } = this;
+    const userId = ctx.state.user._id;
+    const certainWork = await ctx.model.Work.findOne({ id });
+    if (!certainWork) return false;
+    return userId === certainWork.user.toString();
+  }
+
+  /** 更新作品*/
+  async updateWork() {
+    const { ctx } = this;
+    const { id } = ctx.params;
+    const permission = await this.checkPermission(id);
+    console.log('permission', permission);
+    if (!permission) return ctx.helper.fail({ ctx, errorType: 'workNoPermissionFail' });
+    const payload = ctx.request.body;
+    const res = await ctx.model.Work.findOneAndUpdate({ id }, payload, { new: true }).lean();
+    ctx.helper.success({ ctx, res });
+  }
+
+  /** 删除作品*/
+  async deleteWork() {
+    const { ctx } = this;
+    const { id } = ctx.params;
+    const permission = await this.checkPermission(id);
+    if (!permission) return ctx.helper.fail({ ctx, errorType: 'workNoPermissionFail' });
+    const res = await ctx.model.Work.findOneAndDelete({ id }).select('_id id title').lean();
     ctx.helper.success({ ctx, res });
   }
 }

@@ -32,4 +32,6 @@ export default (app: Application) => {
   router.post('/api/works', jwt, controller.work.createEmptyWork);
   router.get('/api/templates', controller.work.getTemplateList);
   router.get('/api/works', jwt, controller.work.myList);
+  router.patch('/api/works/:id', jwt, controller.work.updateWork);
+  router.delete('/api/works/:id', jwt, controller.work.deleteWork);
 };
