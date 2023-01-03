@@ -1,5 +1,6 @@
 import { Controller } from 'egg';
 import inputValidate from '../decorator/inputValidate';
+import checkPermission from '../decorator/checkPermission';
 
 const workCreateRules = {
   title: 'string',
@@ -85,24 +86,43 @@ export default class WorkController extends Controller {
   }
 
   /** 更新作品*/
+  @checkPermission('Work', 'workNoPermissionFail')
   async updateWork() {
     const { ctx } = this;
     const { id } = ctx.params;
-    const permission = await this.checkPermission(id);
-    console.log('permission', permission);
-    if (!permission) return ctx.helper.fail({ ctx, errorType: 'workNoPermissionFail' });
+    // const permission = await this.checkPermission(id);
+    // if (!permission) return ctx.helper.fail({ ctx, errorType: 'workNoPermissionFail' });
     const payload = ctx.request.body;
     const res = await ctx.model.Work.findOneAndUpdate({ id }, payload, { new: true }).lean();
     ctx.helper.success({ ctx, res });
   }
 
   /** 删除作品*/
+  @checkPermission('Work', 'workNoPermissionFail')
   async deleteWork() {
     const { ctx } = this;
     const { id } = ctx.params;
-    const permission = await this.checkPermission(id);
-    if (!permission) return ctx.helper.fail({ ctx, errorType: 'workNoPermissionFail' });
+    // const permission = await this.checkPermission(id);
+    // if (!permission) return ctx.helper.fail({ ctx, errorType: 'workNoPermissionFail' });
     const res = await ctx.model.Work.findOneAndDelete({ id }).select('_id id title').lean();
     ctx.helper.success({ ctx, res });
+  }
+
+  /** 发布作品/模板*/
+  @checkPermission('Work', 'workNoPermissionFail')
+  async publish(isTemplate: boolean) {
+    const { ctx } = this;
+    const url = await this.service.work.publish(ctx.params.id, isTemplate);
+    ctx.helper.success({ ctx, res: { url } });
+  }
+
+  /** 发布作品*/
+  async publishWork() {
+    await this.publish(false);
+  }
+
+  /** 发布模板*/
+  async publishTemplate() {
+    await this.publish(true);
   }
 }
