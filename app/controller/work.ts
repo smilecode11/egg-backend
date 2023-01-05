@@ -8,11 +8,11 @@ const workCreateRules = {
 
 export const workErrorMessages = {
   workValidateFail: {
-    errno: 101001,
+    errno: 102001,
     message: '输入信息验证失败',
   },
   workNoPermissionFail: {
-    errno: 101002,
+    errno: 102002,
     message: '没有权限',
   },
 };
@@ -90,8 +90,6 @@ export default class WorkController extends Controller {
   async updateWork() {
     const { ctx } = this;
     const { id } = ctx.params;
-    // const permission = await this.checkPermission(id);
-    // if (!permission) return ctx.helper.fail({ ctx, errorType: 'workNoPermissionFail' });
     const payload = ctx.request.body;
     const res = await ctx.model.Work.findOneAndUpdate({ id }, payload, { new: true }).lean();
     ctx.helper.success({ ctx, res });
@@ -102,8 +100,6 @@ export default class WorkController extends Controller {
   async deleteWork() {
     const { ctx } = this;
     const { id } = ctx.params;
-    // const permission = await this.checkPermission(id);
-    // if (!permission) return ctx.helper.fail({ ctx, errorType: 'workNoPermissionFail' });
     const res = await ctx.model.Work.findOneAndDelete({ id }).select('_id id title').lean();
     ctx.helper.success({ ctx, res });
   }

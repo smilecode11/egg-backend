@@ -36,4 +36,9 @@ export default (app: Application) => {
   router.delete('/api/works/:id', jwt, controller.work.deleteWork);
   router.post('/api/publish/:id', jwt, controller.work.publishWork);
   router.post('/api/publish-template/:id', jwt, controller.work.publishTemplate);
+
+  // 工具方法相关
+  // router.post('/api/upload-img', jwt, controller.utils.uploadsByFileAndSharp);
+  // router.post('/api/upload-img', jwt, controller.utils.uploadsByStream);
+  router.post('/api/upload-img', jwt, controller.utils.uploadsByStreamPipeline);
 };

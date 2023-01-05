@@ -1,4 +1,5 @@
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg';
+import { join } from 'path';
 
 // 使用 dotenv, 在文件中读取环境变量
 import * as dotenv from 'dotenv';
@@ -90,6 +91,20 @@ export default (appInfo: EggAppInfo) => {
     giteeUserAPI: 'https://gitee.com/api/v5/user',
   };
 
+  //  内置模块, 处理文件上传
+  config.multipart = {
+    // mode: 'file',
+    tmpdir: join(appInfo.baseDir, '/uploads'),
+  };
+
+  //  内置模块, 服务器静态资源访问
+  config.static = {
+    dir: [
+      { prefix: '/public/', dir: join(appInfo.baseDir, 'app/public') },
+      { prefix: '/uploads/', dir: join(appInfo.baseDir, '/uploads') },
+    ],
+  };
+
   // add your special config in here
   const bizConfig = {
     sourceUrl: `https://github.com/eggjs/examples/tree/master/${appInfo.name}`,
@@ -102,6 +117,7 @@ export default (appInfo: EggAppInfo) => {
     aliCloudConfig,
     giteeOauthConfig,
     H5BaseURL: 'http://127.0.0.1:8080',
+    baseUrl: 'http://127.0.0.1:7001',
   };
 
   // the return config will combines to EggAppConfig
