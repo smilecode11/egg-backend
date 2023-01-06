@@ -73,7 +73,7 @@ export default (appInfo: EggAppInfo) => {
     client: {
       accessKeyId: process.env.ALC_ACCESS_KEY,
       accessKeySecret: process.env.ALC_SECRET_KEY,
-      bucket: 'smile-backend',
+      bucket: 'smile-backend2',
       endpoint: 'oss-cn-hangzhou.aliyuncs.com',
     },
   };
@@ -91,13 +91,13 @@ export default (appInfo: EggAppInfo) => {
     giteeUserAPI: 'https://gitee.com/api/v5/user',
   };
 
-  //  内置模块, 处理文件上传
   config.multipart = {
     // mode: 'file',
     tmpdir: join(appInfo.baseDir, '/uploads'),
+    whitelist: [ '.png', '.jpg', '.jpeg', '.wbmp', '.webp', '.gif' ], //  上传文件类型限制
+    fileSize: '500kb', //  允许上传文件大小
   };
 
-  //  内置模块, 服务器静态资源访问
   config.static = {
     dir: [
       { prefix: '/public/', dir: join(appInfo.baseDir, 'app/public') },

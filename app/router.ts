@@ -40,5 +40,7 @@ export default (app: Application) => {
   // 工具方法相关
   // router.post('/api/upload-img', jwt, controller.utils.uploadsByFileAndSharp);
   // router.post('/api/upload-img', jwt, controller.utils.uploadsByStream);
-  router.post('/api/upload-img', jwt, controller.utils.uploadsByStreamPipeline);
+  // router.post('/api/upload-img', jwt, controller.utils.uploadsByStreamPipeline);
+  // router.post('/api/upload-img', jwt, controller.utils.uploadToOSS);
+  router.post('/api/upload-img', jwt, controller.utils.uploadMutipleFilesToOSS);
 };

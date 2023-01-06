@@ -4,6 +4,8 @@ import { nanoid } from 'nanoid';
 import { extname, join, parse } from 'path';
 import * as sharp from 'sharp';
 import { pipeline } from 'stream/promises';
+import * as streamWormhole from 'stream-wormhole';
+import { FileStream } from '../../typings/app';
 
 export const utilsErrorMessages = {
   uploadFail: {
@@ -14,6 +16,14 @@ export const utilsErrorMessages = {
     errno: 103002,
     message: '图片上传失败',
   },
+  imageUploadWithTypeFail: {
+    errno: 103003,
+    message: '图片上传类型错误',
+  },
+  imageUploadWithSizeFail: {
+    errno: 103004,
+    message: '图片上传超出大小限制',
+  },
 };
 
 export default class UtilsController extends Controller {
@@ -21,6 +31,56 @@ export default class UtilsController extends Controller {
   pathToURL(path: string) {
     const { app } = this;
     return path.replace(app.config.baseDir, app.config.baseUrl);
+  }
+
+  /** 上传图片 - oss*/
+  async uploadToOSS() {
+    const { ctx } = this;
+    const stream = await ctx.getFileStream();
+    const savedOSSPath = join('backend2', nanoid(6) + extname(stream.filename));
+    try {
+      const result = await ctx.oss.put(savedOSSPath, stream);
+      const { url, name } = result;
+      ctx.helper.success({ ctx, res: { name, url } });
+    } catch (error) {
+      await streamWormhole(stream);
+      ctx.helper.fail({ ctx, errorType: 'imageUploadFail' });
+    }
+  }
+
+  /** 上传图片 - oss 多文件上传*/
+  async uploadMutipleFilesToOSS() {
+    const { ctx, app } = this;
+    const { fileSize } = app.config.multipart;
+    const parts = ctx.multipart({
+      limits: {
+        fileSize: (fileSize as number),
+      },
+    });
+    const urls: string[] = [];
+    let part: FileStream | string[];
+    while ((part = await parts())) {
+      console.log('_parts', part);
+      if (Array.isArray(part)) {
+        app.logger.info(part);
+      } else {
+        try {
+          const savedOSSPath = join('backend2', nanoid(6) + extname(part.filename));
+          const { url } = await ctx.oss.put(savedOSSPath, part);
+          urls.push(url);
+          // 判断上传文件是否超出限制: part.truncated = true
+          if (part.truncated) {
+            await ctx.oss.delete(savedOSSPath); //  删除 oss
+            return ctx.helper.fail({ ctx, errorType: 'imageUploadWithSizeFail', error: `Reach fileSize limit ${((fileSize as number) / 1024)} kb` });
+          }
+
+        } catch (error) {
+          await streamWormhole(part);
+          ctx.helper.fail({ ctx, errorType: 'imageUploadFail' });
+        }
+      }
+    }
+    ctx.helper.success({ ctx, res: { urls } });
   }
 
   /** 上传图片 - stream mode pipeline*/
