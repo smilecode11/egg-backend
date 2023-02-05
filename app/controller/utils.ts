@@ -24,9 +24,35 @@ export const utilsErrorMessages = {
     errno: 103004,
     message: '图片上传超出大小限制',
   },
+  h5WorkNotExistFail: {
+    errno: 103005,
+    message: '渲染作品不存在',
+  },
 };
 
 export default class UtilsController extends Controller {
+
+  splitIdAndUuid(str = '') {
+    const result = { id: '', uuid: '' };
+    if (!str) return result;
+    const firstDashIndex = str.indexOf('-');
+    if (firstDashIndex < 0) return result;
+    result.id = str.slice(0, firstDashIndex);
+    result.uuid = str.slice(firstDashIndex + 1);
+    return result;
+  }
+
+  async renderH5Page() {
+    const { ctx, service } = this;
+    const { idAndUuid } = ctx.params;
+    const query = this.splitIdAndUuid(idAndUuid);
+    try {
+      const pageData = await service.utils.renderToPageData(query);
+      await ctx.render('page.tpl', pageData);
+    } catch (error) {
+      ctx.helper.fail({ ctx, errorType: 'h5WorkNotExistFail' });
+    }
+  }
 
   pathToURL(path: string) {
     const { app } = this;

@@ -154,25 +154,6 @@ export default class UserController extends Controller {
 
   async current() {
     const { ctx, service } = this;
-    //  2. 获取头部存储的 token
-    // const token = this.getTokenValue();
-    // if (!token) return ctx.helper.fail({ ctx, errorType: 'loginValidateFail' });
-    // try {
-    //   //  3. 验证 token
-    //   const decoded = jwt.verify(token, app.config.jwt.secret);
-    //   ctx.helper.success({ ctx, res: decoded });
-    // } catch (error) {
-    //   ctx.helper.fail({ ctx, errorType: 'loginValidateFail' });
-    // }
-    //  编写的 mineJwt 中间件把 解密处理来的信息保存到了 ctx.state 中, 这里我们直接取
-    const { user } = ctx.state;
-    const userData = await service.user.findByUsername(user.username);
-    if (!userData) return ctx.helper.fail({ ctx, errorType: 'loginCheckFail' });
-    ctx.helper.success({ ctx, res: userData });
-  }
-
-  async current2() {
-    const { ctx, service } = this;
     //  egg-jwt 存储数据也是在 ctx.state 上, 和我们自己写的 mineJwt 一样
     const { user } = ctx.state;
     const userData = await service.user.findByUsername(user.username);

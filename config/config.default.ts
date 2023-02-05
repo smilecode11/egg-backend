@@ -60,7 +60,7 @@ export default (appInfo: EggAppInfo) => {
   };
 
   config.jwt = {
-    secret: 'smile.jsonwebtoken',
+    secret: process.env.JWT_SECRET,
   };
 
   const aliCloudConfig = {
