@@ -1,9 +1,15 @@
 import { Controller } from 'egg';
 import inputValidate from '../decorator/inputValidate';
 import checkPermission from '../decorator/checkPermission';
+import { nanoid } from 'nanoid';
 
 const workCreateRules = {
   title: 'string',
+};
+
+const workCreateChannelRules = {
+  name: 'string',
+  workId: 'string',
 };
 
 export const workErrorMessages = {
@@ -14,6 +20,10 @@ export const workErrorMessages = {
   workNoPermissionFail: {
     errno: 102002,
     message: '没有权限',
+  },
+  channelOperaFail: {
+    errno: 102005,
+    message: '作品渠道操作失败',
   },
 };
 
@@ -121,4 +131,49 @@ export default class WorkController extends Controller {
   async publishTemplate() {
     await this.publish(true);
   }
+
+  /** 创建作品的 channels*/
+  @inputValidate(workCreateChannelRules, 'workValidateFail')
+  async createChannel() {
+    const { ctx } = this;
+    const { name, workId } = ctx.request.body;
+    const newChannel = {
+      uuid: nanoid(5),
+      name,
+    };
+    const res = await ctx.model.Work.findOneAndUpdate({ id: parseInt(workId) }, { $push: { channels: newChannel } }, { new: true });
+    if (res) return ctx.helper.success({ ctx, res: newChannel });
+    ctx.helper.fail({ ctx, errorType: 'channelOperaFail' });
+  }
+
+  /** 获取作品的 channels*/
+  async getWorkChannels() {
+    const { ctx } = this;
+    const { id } = ctx.params;
+    const selectWork = await ctx.model.Work.findOne({ id });
+    if (selectWork) {
+      const { channels } = selectWork;
+      ctx.helper.success({ ctx, res: { count: channels && channels.length || 0, list: channels } });
+    } else {
+      ctx.helper.fail({ ctx, errorType: 'channelOperaFail' });
+    }
+  }
+
+  /** 更新作品的 channels*/
+  async updateWorkChannel() {
+    const { ctx } = this;
+    const { id } = ctx.params;
+    const { name } = ctx.request.body;
+    await ctx.model.Work.findOneAndUpdate({ 'channels.id': id }, { $set: { 'channels.$.name': name } });
+    ctx.helper.success({ ctx, res: { name } });
+  }
+
+  /** 删除作品的 channels*/
+  async deleteWorkChannel() {
+    const { ctx } = this;
+    const { id } = ctx.params;
+    const selectWork = await ctx.model.Work.findOneAndUpdate({ 'channels.id': id }, { $pull: { channels: id } }, { new: true });
+    ctx.helper.success({ ctx, res: selectWork });
+  }
+
 }

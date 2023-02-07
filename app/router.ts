@@ -24,6 +24,11 @@ export default (app: Application) => {
   router.delete('/works/:id', jwt, controller.work.deleteWork);
   router.post('/publish/:id', jwt, controller.work.publishWork);
   router.post('/publish-template/:id', jwt, controller.work.publishTemplate);
+  //  作品 - 渠道(标签)
+  router.post('/channels', jwt, controller.work.createChannel); //  给 work 添加 channel
+  router.get('/channels/:id', jwt, controller.work.getWorkChannels); //  获取 work 的 channels
+  router.patch('/channels/:id', jwt, controller.work.updateWorkChannel);
+  router.delete('/channels/:id', jwt, controller.work.deleteWorkChannel);
 
   // 工具方法相关
   // router.post('/upload-img', jwt, controller.utils.uploadsByFileAndSharp);
