@@ -115,7 +115,7 @@ export default class WorkController extends Controller {
   }
 
   /** 发布作品/模板*/
-  @checkPermission('Work', 'workNoPermissionFail')
+  @checkPermission('Work', 'workNoPermissionFail', { action: 'publish', key: 'id', value: { type: 'params', valueKey: 'id'} })
   async publish(isTemplate: boolean) {
     const { ctx } = this;
     const url = await this.service.work.publish(ctx.params.id, isTemplate);
@@ -134,6 +134,7 @@ export default class WorkController extends Controller {
 
   /** 创建作品的 channels*/
   @inputValidate(workCreateChannelRules, 'workValidateFail')
+  @checkPermission({ casl: 'Channel', mongoose: 'Work' }, 'workNoPermissionFail', { value: { type: 'body', valueKey: 'workId' } })
   async createChannel() {
     const { ctx } = this;
     const { name, workId } = ctx.request.body;
@@ -147,6 +148,7 @@ export default class WorkController extends Controller {
   }
 
   /** 获取作品的 channels*/
+  @checkPermission({ casl: 'Channel', mongoose: 'Work' }, 'workNoPermissionFail')
   async getWorkChannels() {
     const { ctx } = this;
     const { id } = ctx.params;
@@ -160,19 +162,21 @@ export default class WorkController extends Controller {
   }
 
   /** 更新作品的 channels*/
+  @checkPermission({ casl: 'Channel', mongoose: 'Work' }, 'workNoPermissionFail', { key: 'channels.uuid' })
   async updateWorkChannel() {
     const { ctx } = this;
     const { id } = ctx.params;
     const { name } = ctx.request.body;
-    await ctx.model.Work.findOneAndUpdate({ 'channels.id': id }, { $set: { 'channels.$.name': name } });
+    await ctx.model.Work.findOneAndUpdate({ 'channels.uuid': id }, { $set: { 'channels.$.name': name } });
     ctx.helper.success({ ctx, res: { name } });
   }
 
   /** 删除作品的 channels*/
+  @checkPermission({ casl: 'Channel', mongoose: 'Work' }, 'workNoPermissionFail', { key: 'channels.uuid' })
   async deleteWorkChannel() {
     const { ctx } = this;
     const { id } = ctx.params;
-    const selectWork = await ctx.model.Work.findOneAndUpdate({ 'channels.id': id }, { $pull: { channels: id } }, { new: true });
+    const selectWork = await ctx.model.Work.findOneAndUpdate({ 'channels.uuid': id }, { $pull: { channels: id } }, { new: true });
     ctx.helper.success({ ctx, res: selectWork });
   }
 

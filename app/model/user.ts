@@ -14,6 +14,7 @@ export interface UserProps {
   oauthID?: string;
   createdAt: Date;
   updatedAt: Date;
+  role: 'admin' | 'payed' | 'normal'
 }
 
 function initUserModel(app: Application) {
@@ -28,6 +29,7 @@ function initUserModel(app: Application) {
     type: { type: String, default: 'email' },
     oauthID: { type: String },
     provider: { type: String, default: '' },
+    role: { type: String, default: 'normal' },
   }, {
     collection: 'users',
     timestamps: true, // 自动更新 Date 属性
