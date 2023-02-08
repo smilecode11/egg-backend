@@ -66,28 +66,24 @@ export default function checkPermission(modelName: string | ModelMapping, errorT
       const rule = ability.relevantRuleFor(action, caslModelName);
       //  如果存在条件, 执行条件逻辑
       if (rule && rule.conditions) {
-        console.log('_query', query, '_mongooseModelName', mongooseModelName);
         const selectRecord = await ctx.model[mongooseModelName].findOne(query).lean();
-        console.log('_selectRecord', selectRecord);
         permission = ability.can(action, subject(caslModelName, selectRecord));
-        console.log('_conditions permission', permission);
       } else {
         permission = ability.can(action, caslModelName);
       }
       //  如果有字段限制, 我们需要对字段包含关系的进行判断处理
       if (rule && rule.fields) {
         const fields = permittedFieldsOf(ability, action, caslModelName, fieldsOptions);
-        // console.log('_fields', fields);
         if (fields.length > 0) {
           //  1. 过滤 request.body , 将可操作的值进行更新
           //  2. 通过对比 payload 的 key 和可被允许的 fields 作比较, 返回错误信息
           const payloadKeys = Object.keys(ctx.request.body);
           const diffKeys = difference(payloadKeys, fields);
-          console.log('_diffKeys', diffKeys);
+          // console.log('_diffKeys', diffKeys);
           keysPermission = diffKeys.length === 0;
         }
       }
-      console.log('_permission', permission, '_keyPermissition', keysPermission);
+      // console.log('_permission', permission, '_keyPermissition', keysPermission);
       if (!permission || !keysPermission) return ctx.helper.fail({ ctx, errorType });
       await orgiginMethod.apply(this, args);
     };

@@ -22,7 +22,8 @@
     "inlineSourceMap": true,
     "importHelpers": true,
     "resolveJsonModule": true,
-    // "esModuleInterop": true
+    // "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true  //  npm run tsc 报错问题: This module is declared with 'export =', and can only be used with a default import when using the 'esModuleInterop' flag.
   },
   "exclude": [
     "app/public",

@@ -29,7 +29,7 @@ export default class UserService extends Service {
     const { ctx, app } = this;
     // 检查用户是否存在 -> 注册/登录 => token
     const user = await this.findByUsername(cellphone);
-    if (user) return app.jwt.sign({ username: user.username, _id: user._id }, app.config.jwt.secret, { expiresIn: 60 * 60 });
+    if (user) return app.jwt.sign({ username: user.username, _id: user._id }, app.config.jwt.secret, { expiresIn: app.config.jwtExpires });
     //  不存在 -> 新建用户注册返回 token
     const userCreateData: Partial<UserProps> = {
       username: cellphone,
@@ -38,7 +38,7 @@ export default class UserService extends Service {
       type: 'cellphone',
     };
     const newUser = await ctx.model.User.create(userCreateData);
-    return app.jwt.sign({ username: newUser.username, _id: newUser._id }, app.config.jwt.secret, { expiresIn: 60 * 60 });
+    return app.jwt.sign({ username: newUser.username, _id: newUser._id }, app.config.jwt.secret, { expiresIn: app.config.jwtExpires });
   }
 
   /** 阿里 SMS 短信发送服务*/
@@ -107,7 +107,7 @@ export default class UserService extends Service {
     const stringId = id.toString();
     const existsUser = await this.findByUsername(`Gitee${stringId}`);
     if (existsUser) {
-      const token = app.jwt.sign({ username: existsUser.username, _id: existsUser._id }, app.config.jwt.secret, { expiresIn: 60 * 60 });
+      const token = app.jwt.sign({ username: existsUser.username, _id: existsUser._id }, app.config.jwt.secret, { expiresIn: app.config.jwtExpires });
       return token;
     }
     const userCreatedData: Partial<UserProps> = {
@@ -120,7 +120,7 @@ export default class UserService extends Service {
       provider: 'gitee',
     };
     const newUser = await ctx.model.User.create(userCreatedData);
-    const token = app.jwt.sign({ username: newUser.username, _id: newUser._id }, app.config.jwt.secret, { expiresIn: 60 * 60 });
+    const token = app.jwt.sign({ username: newUser.username, _id: newUser._id }, app.config.jwt.secret, { expiresIn: app.config.jwtExpires });
     return token;
   }
 }

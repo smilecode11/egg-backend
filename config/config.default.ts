@@ -28,6 +28,7 @@ export default (appInfo: EggAppInfo) => {
       dbName: 'mongoTest2',
       user: 'root',
       pass: '123456',
+      useUnifiedTopology: true, //  mongoose旧的解析器准备废弃，要使用新的解析器
     },
   };
 
@@ -118,6 +119,7 @@ export default (appInfo: EggAppInfo) => {
     giteeOauthConfig,
     H5BaseURL: 'http://127.0.0.1:8080',
     baseUrl: 'http://127.0.0.1:7001',
+    jwtExpires: '1h',
   };
 
   // the return config will combines to EggAppConfig
