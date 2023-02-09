@@ -8,10 +8,10 @@ export default class Test extends Service {
 
   /**
    * sayHi to you
-   * @param name - your name
+   * @param content - your content
    */
-  public async sayHi(name: string) {
-    return `hi, ${name}`;
+  public async sayHi(content: string) {
+    return `hi, ${content}`;
   }
 
   private getPersonModel() {

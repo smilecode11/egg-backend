@@ -1,9 +1,9 @@
 import { Controller } from 'egg';
-import { createWriteStream } from 'fs';
+// import { createWriteStream } from 'fs';
 import { nanoid } from 'nanoid';
-import { extname, join, parse } from 'path';
-import * as sharp from 'sharp';
-import { pipeline } from 'stream/promises';
+import { extname, join/* , parse */ } from 'path';
+// import * as sharp from 'sharp';
+// import { pipeline } from 'stream/promises';
 import * as streamWormhole from 'stream-wormhole';
 import { FileStream } from '../../typings/app';
 
@@ -110,83 +110,83 @@ export default class UtilsController extends Controller {
   }
 
   /** 上传图片 - stream mode pipeline*/
-  async uploadsByStreamPipeline() {
-    const { ctx, app } = this;
-    const stream = await ctx.getFileStream();
-    const uid = nanoid(6);
-    const saveFilePath = join(app.config.baseDir, 'uploads', uid + extname(stream.filename));
-    const saveThumbnailFilePath = join(app.config.baseDir, 'uploads', uid + '_thumbnail' + extname(stream.filename));
-    const target = createWriteStream(saveFilePath);
-    const thumbTarget = createWriteStream(saveThumbnailFilePath);
-    //  pipeline 进行流的操作
-    const savePromise = pipeline(stream, target);
-    const transformer = sharp().resize({ width: 300 });
-    const saveThumbPromise = pipeline(stream, transformer, thumbTarget);
-    try {
-      await Promise.all([ savePromise, saveThumbPromise ]);
-    } catch (error) {
-      return ctx.helper.fail({ ctx, errorType: 'imageUploadFail' });
-    }
-    ctx.helper.success({ ctx, res: { url: this.pathToURL(saveFilePath), thumbnailUrl: this.pathToURL(saveThumbnailFilePath) } });
-  }
+  // async uploadsByStreamPipeline() {
+  //   const { ctx, app } = this;
+  //   const stream = await ctx.getFileStream();
+  //   const uid = nanoid(6);
+  //   const saveFilePath = join(app.config.baseDir, 'uploads', uid + extname(stream.filename));
+  //   const saveThumbnailFilePath = join(app.config.baseDir, 'uploads', uid + '_thumbnail' + extname(stream.filename));
+  //   const target = createWriteStream(saveFilePath);
+  //   const thumbTarget = createWriteStream(saveThumbnailFilePath);
+  //   //  pipeline 进行流的操作
+  //   const savePromise = pipeline(stream, target);
+  //   const transformer = sharp().resize({ width: 300 });
+  //   const saveThumbPromise = pipeline(stream, transformer, thumbTarget);
+  //   try {
+  //     await Promise.all([ savePromise, saveThumbPromise ]);
+  //   } catch (error) {
+  //     return ctx.helper.fail({ ctx, errorType: 'imageUploadFail' });
+  //   }
+  //   ctx.helper.success({ ctx, res: { url: this.pathToURL(saveFilePath), thumbnailUrl: this.pathToURL(saveThumbnailFilePath) } });
+  // }
 
   /** 上传图片 - stream mode pipe*/
-  async uploadsByStream() {
-    const { ctx, app } = this;
-    const stream = await ctx.getFileStream();
-    //  生成原始文件名和缩略图名 uploads/xxx/xxx.ext uploads/xxx/xxx_thumbnail.ext
-    const uid = nanoid(6);
-    const saveFilePath = join(app.config.baseDir, 'uploads', uid + extname(stream.filename));
-    const saveThumbnailFilePath = join(app.config.baseDir, 'uploads', uid + '_thumbnail' + extname(stream.filename));
-    //  创建可写流
-    const target = createWriteStream(saveFilePath);
-    const thumbTarget = createWriteStream(saveThumbnailFilePath);
-    //  使用 promise 改写流转换过程
-    const savePromise = new Promise((resolve, reject) => {
-      stream.pipe(target)
-        .on('finish', resolve)
-        .on('error', reject);
-    });
-    const transformer = sharp().resize({ width: 300 }); //  转化流任务
-    const saveThumbPromise = new Promise((resolve, reject) => {
-      stream
-        .on('error', reject) //  添加可写流错误监听
-        .pipe(transformer)
-        .on('error', reject) // 添加转化流错误监听
-        .pipe(thumbTarget)
-        .on('finish', resolve)
-        .on('error', reject); //  可写流错误监听
-    });
-    //  使用 promise.all 执行流文件写入工作;
-    try {
-      await Promise.all([ savePromise, saveThumbPromise ]);
-    } catch (error) {
-      return ctx.helper.fail({ ctx, errorType: 'imageUploadFail' });
-    }
-    ctx.helper.success({ ctx, res: { url: this.pathToURL(saveFilePath), thumbnailUrl: this.pathToURL(saveThumbnailFilePath) } });
-  }
+  // async uploadsByStream() {
+  //   const { ctx, app } = this;
+  //   const stream = await ctx.getFileStream();
+  //   //  生成原始文件名和缩略图名 uploads/xxx/xxx.ext uploads/xxx/xxx_thumbnail.ext
+  //   const uid = nanoid(6);
+  //   const saveFilePath = join(app.config.baseDir, 'uploads', uid + extname(stream.filename));
+  //   const saveThumbnailFilePath = join(app.config.baseDir, 'uploads', uid + '_thumbnail' + extname(stream.filename));
+  //   //  创建可写流
+  //   const target = createWriteStream(saveFilePath);
+  //   const thumbTarget = createWriteStream(saveThumbnailFilePath);
+  //   //  使用 promise 改写流转换过程
+  //   const savePromise = new Promise((resolve, reject) => {
+  //     stream.pipe(target)
+  //       .on('finish', resolve)
+  //       .on('error', reject);
+  //   });
+  //   const transformer = sharp().resize({ width: 300 }); //  转化流任务
+  //   const saveThumbPromise = new Promise((resolve, reject) => {
+  //     stream
+  //       .on('error', reject) //  添加可写流错误监听
+  //       .pipe(transformer)
+  //       .on('error', reject) // 添加转化流错误监听
+  //       .pipe(thumbTarget)
+  //       .on('finish', resolve)
+  //       .on('error', reject); //  可写流错误监听
+  //   });
+  //   //  使用 promise.all 执行流文件写入工作;
+  //   try {
+  //     await Promise.all([ savePromise, saveThumbPromise ]);
+  //   } catch (error) {
+  //     return ctx.helper.fail({ ctx, errorType: 'imageUploadFail' });
+  //   }
+  //   ctx.helper.success({ ctx, res: { url: this.pathToURL(saveFilePath), thumbnailUrl: this.pathToURL(saveThumbnailFilePath) } });
+  // }
 
   /** 上传图片 - file mode & sharp 处理*/
-  async uploadsByFileAndSharp() {
-    const { ctx, app } = this;
-    if (ctx.request.files) {
-      const file = ctx.request.files[0];
-      const { filepath } = file;
-      //  生成 sharp 实例, 用于图片处理等相关工作
-      const imageSource = sharp(filepath);
-      const metaData = await imageSource.metadata();
-      let thumbnailUrl = '';
-      //  检查图片宽度大于 300, 进行压缩生成缩略图, 存储格式 /uploads/**/abc-thumbnail.png */
-      if (metaData.width && metaData.width > 300) {
-        const { ext, name, dir } = parse(filepath);
-        const thumbnailFilePath = join(dir, `${name}-thumbnail${ext}`);
-        await imageSource.resize({ width: 300 }).toFile(thumbnailFilePath);
-        thumbnailUrl = thumbnailFilePath.replace(app.config.baseDir, app.config.baseUrl);
-      }
-      const url = file.filepath.replace(app.config.baseDir, app.config.baseUrl);
-      ctx.helper.success({ ctx, res: { url, thumbnailUrl: thumbnailUrl ? thumbnailUrl : url } });
-    } else {
-      ctx.helper.fail({ ctx, errorType: 'uploadFail' });
-    }
-  }
+  // async uploadsByFileAndSharp() {
+  //   const { ctx, app } = this;
+  //   if (ctx.request.files) {
+  //     const file = ctx.request.files[0];
+  //     const { filepath } = file;
+  //     //  生成 sharp 实例, 用于图片处理等相关工作
+  //     const imageSource = sharp(filepath);
+  //     const metaData = await imageSource.metadata();
+  //     let thumbnailUrl = '';
+  //     //  检查图片宽度大于 300, 进行压缩生成缩略图, 存储格式 /uploads/**/abc-thumbnail.png */
+  //     if (metaData.width && metaData.width > 300) {
+  //       const { ext, name, dir } = parse(filepath);
+  //       const thumbnailFilePath = join(dir, `${name}-thumbnail${ext}`);
+  //       await imageSource.resize({ width: 300 }).toFile(thumbnailFilePath);
+  //       thumbnailUrl = thumbnailFilePath.replace(app.config.baseDir, app.config.baseUrl);
+  //     }
+  //     const url = file.filepath.replace(app.config.baseDir, app.config.baseUrl);
+  //     ctx.helper.success({ ctx, res: { url, thumbnailUrl: thumbnailUrl ? thumbnailUrl : url } });
+  //   } else {
+  //     ctx.helper.fail({ ctx, errorType: 'uploadFail' });
+  //   }
+  // }
 }

@@ -22,24 +22,24 @@ export default (appInfo: EggAppInfo) => {
     },
   };
 
-  config.mongoose = {
-    url: 'mongodb://127.0.0.1:27017',
-    options: {
-      dbName: 'mongoTest2',
-      user: 'root',
-      pass: '123456',
-      useUnifiedTopology: true, //  mongoose旧的解析器准备废弃，要使用新的解析器
-    },
-  };
+  // config.mongoose = {
+  //   url: 'mongodb://127.0.0.1:27017',
+  //   options: {
+  //     dbName: 'mongoTest2',
+  //     user: 'root',
+  //     pass: '123456',
+  //     useUnifiedTopology: true, //  mongoose旧的解析器准备废弃，要使用新的解析器
+  //   },
+  // };
 
-  config.redis = {
-    client: {
-      port: 6379,
-      host: '127.0.0.1',
-      db: 0,
-      password: '',
-    },
-  };
+  // config.redis = {
+  //   client: {
+  //     port: 6379,
+  //     host: '127.0.0.1',
+  //     db: 0,
+  //     password: '',
+  //   },
+  // };
 
   //  验证
   config.validate = {

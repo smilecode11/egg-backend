@@ -4,6 +4,7 @@ export default (app: Application) => {
   const { controller, router } = app;
   const jwt = app.jwt as any;
   router.prefix('/api'); //  指定路由前缀
+  router.get('/home', controller.home.index);
 
   //  用户相关
   router.post('/users/create', controller.user.createByEmail);
