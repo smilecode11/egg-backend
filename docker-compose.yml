@@ -1,0 +1,23 @@
+version: '3'
+services:
+  smile-mongo:
+    image: mongo
+    container_name: smile-mongo
+    volumes:
+      - '.docker-volumes/mongo/data:/data/db' # 映射数据到 .docker-volumes/mongo/data 中持续化存储数据
+      - ''
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+  # smile-backend:
+    # depends_on:
+    #   - smile-mongo
+    # build:
+    #   context: . # 当前目录
+    #   dockerfile: Dockerfile # 基于 Dockerfile 构建
+    # image: smile-backend
+    # container_name: smile-backend
+    # ports:
+    #   - 7001:7001

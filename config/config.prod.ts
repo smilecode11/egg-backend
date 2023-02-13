@@ -4,20 +4,20 @@ export default () => {
   const config: PowerPartial<EggAppConfig> = {};
   config.baseUrl = 'http://127.0.0.1:7001';
 
-  // config.mongoose = {
-  //   url: 'mongodb://127.0.0.1:27017',
-  //   options: {
-  //     dbName: 'mongoTest2',
-  //     user: 'root',
-  //     pass: '123456',
-  //     useUnifiedTopology: true, //  mongoose旧的解析器准备废弃，要使用新的解析器
-  //   },
-  // };
+  config.mongoose = {
+    url: 'mongodb://smile-mongo:27017',
+    options: {
+      dbName: 'mongoTest2',
+      user: '',
+      pass: '',
+      useUnifiedTopology: true, //  mongoose旧的解析器准备废弃，要使用新的解析器
+    },
+  };
 
   // config.redis = {
   //   client: {
   //     port: 6379,
-  //     host: '127.0.0.1',
+  //     host: 'smile-redis',
   //     db: 0,
   //     password: '',
   //   },
