@@ -1,5 +1,5 @@
 # 使用 node16
-FROM node:16
+FROM node:16-alpine
 # 创建工作区
 RUN mkdir -p /usr/src/app
 # 设置工作区
