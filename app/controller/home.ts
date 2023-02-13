@@ -17,6 +17,7 @@ export default class HomeController extends Controller {
         redisStatus: status,
         appVersion,
         env: process.env.PING_ENV,
+        change: '优化 docker 构建',
       },
     });
   }

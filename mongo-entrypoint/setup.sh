@@ -16,7 +16,15 @@ db.works.insertMany([
     {
         id: '19',
         title: '1024 程序员日',
-        desc: '1024 程序员日'
+        desc: '1024 程序员日',
+        isTemplate: true,
+        isPublic: true,
+        author: 'wp',
+        copiedCount: '',
+        coverImg: '',
+        user: '',
+        isHot: '',
+        createdAt: ''
     }
 ])
 EOF
