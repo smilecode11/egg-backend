@@ -5,11 +5,11 @@ export default () => {
   config.baseUrl = 'http://127.0.0.1:7001';
 
   config.mongoose = {
-    url: 'mongodb://smile-mongo:27017',
+    url: 'mongodb://smile-mongo:27017/mongoTest2',
     options: {
-      dbName: 'mongoTest2',
-      user: '',
-      pass: '',
+      // dbName: 'mongoTest2',
+      user: process.env.MONGO_DB_USERNAME,
+      pass: process.env.MONGO_DB_PASSWORD,
       useUnifiedTopology: true, //  mongoose旧的解析器准备废弃，要使用新的解析器
     },
   };
