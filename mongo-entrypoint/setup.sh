@@ -14,26 +14,6 @@ db.createUser({
 db.createCollection('works')
 db.works.insertMany([
     {
-        "copiedCount" : 0,
-        "status" : 2,
-        "channels" : [ 
-            {
-                "uuid" : "sLIOM",
-                "name" : "分享 333222"
-            }, 
-            {
-                "uuid" : "asr4f",
-                "name" : "渠道 name"
-            }, 
-            {
-                "uuid" : "hHpra",
-                "name" : "渠道 name"
-            }, 
-            {
-                "uuid" : "fLOXy",
-                "name" : "渠道 name"
-            }
-        ],
         "title" : "作品新增测试@装饰器验证用户输入",
         "desc" : "未命名作品",
         "coverImg" : "https://static.imooc-lego.com/upload-files/screenshot-480853.png",
@@ -209,13 +189,7 @@ db.works.insertMany([
                 "backgroundSize" : "cover",
                 "height" : "666.6666666666666px"
             }
-        },
-        "isPublic": true,
-        "isTemplate": true,
-        "user" : ObjectId("639693c1a66ae8eb4dc0cdc1"),
-        "author" : "smilewupeng@gmail.com",
-        "uuid" : "A6wfLw",
-        "id" : 5,
+        }
     }
 ])
 EOF
