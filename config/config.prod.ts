@@ -14,14 +14,14 @@ export default () => {
     },
   };
 
-  // config.redis = {
-  //   client: {
-  //     port: 6379,
-  //     host: 'smile-redis',
-  //     db: 0,
-  //     password: '',
-  //   },
-  // };
+  config.redis = {
+    client: {
+      port: 6379,
+      host: 'smile-redis',
+      // db: 0,
+      password: process.env.REDIS_PASSWORD,
+    },
+  };
 
   //  配置允许访问域名
   config.security = {

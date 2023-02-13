@@ -8,14 +8,21 @@ services:
       - '$PWD/mongo-entrypoint/:/docker-entrypoint-initdb.d/' # 初始化脚本映射
     ports:
       - 27017:27017
-    # environment:  # docker 内置环境变量
-    #   - MONGO_INITDB_ROOT_USERNAME=admin
-    #   - MONGO_INITDB_ROOT_PASSWORD=pass
     env_file: # 读取本地的 env 文件中所有环境变量
+      - .env
+  smile-redis: 
+    image: redis:6
+    container_name: smile-redis
+    command: >
+      --requirepass ${REDIS_PASSWORD}
+    ports: 
+      - 6379:6379
+    env_file:
       - .env
   smile-backend:
     depends_on:
       - smile-mongo
+      - smile-redis
     build:
       context: . # 当前目录
       dockerfile: Dockerfile # 基于 Dockerfile 构建

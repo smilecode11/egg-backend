@@ -32,14 +32,14 @@ export default (appInfo: EggAppInfo) => {
     },
   };
 
-  // config.redis = {
-  //   client: {
-  //     port: 6379,
-  //     host: '127.0.0.1',
-  //     db: 0,
-  //     password: '',
-  //   },
-  // };
+  config.redis = {
+    client: {
+      port: 6379,
+      host: '127.0.0.1',
+      db: 0,
+      password: '',
+    },
+  };
 
   //  验证
   config.validate = {
