@@ -74,7 +74,7 @@ jobs:
           script: |
             docker login --username=${{ secrets.ACR_USERNAME }} --password=${{ secrets.ACR_PASSWORD }} registry.cn-hangzhou.aliyuncs.com
             cd ~/smile-backend
-            ocker-compose -f docker-compose-online.yml down
+            docker-compose -f docker-compose-online.yml down
             docker-compose -f docker-compose-online.yml up -d
             rm -rf .env
             docker logout registry.cn-hangzhou.aliyuncs.com
