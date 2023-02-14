@@ -76,7 +76,7 @@ jobs:
             cd ~/smile-backend
             docker-compose -f docker-compose-online.yml down
             docker-compose -f docker-compose-online.yml up -d
-      #      rm -rf .env
+            rm -rf .env
             docker logout registry.cn-hangzhou.aliyuncs.com
 
 
