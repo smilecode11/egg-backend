@@ -6,8 +6,8 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 # 执行一次拷贝任务, 当依赖发生变化(package.json 改变)时执行资源下载
 COPY package.json package-lock.json /usr/src/app/
-# 执行下载命令 - 使用淘宝源下载
-RUN npm install --registry=https://registry.npm.taobao.org
+# 执行下载命令 - 使用淘宝源下载 --registry=https://registry.npm.taobao.org
+RUN npm install
 # 拷贝当前目录到工作区
 COPY . /usr/src/app/
 # 执行 npm 命令, 转化 ts 为 js
