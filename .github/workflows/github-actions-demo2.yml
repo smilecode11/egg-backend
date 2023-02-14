@@ -11,7 +11,7 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - uses: actions/step-node@v2
-        with: |
+        with:
           node-version: '16'
       - run: node -v
       - run: npm install -g typescript
