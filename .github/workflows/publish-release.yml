@@ -1,4 +1,4 @@
-name: Publish Release
+name: Publish Release 1
 on: 
   # 在特定 tag 被 push 以后被调用
   push:
