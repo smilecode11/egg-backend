@@ -27,7 +27,7 @@ jobs:
           echo PING_ENV=${{ secrets.PING_ENV }} >> .env
       # 使用阿里 ACR 完成 docker login
       - name: 'Login to Aliyun Container Registry (ACR)'
-        uses: aliyunacr-login@v1
+        uses: aliyun/acr-login@v1
         with:
           login-server: registry.cn-hangzhou.aliyuncs.com
           region-id: cn-hangzhou
