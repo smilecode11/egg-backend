@@ -1,9 +1,9 @@
-name: Publish Release 2
+name: Publish Release Test
 on: 
   # 在特定 tag 被 push 以后被调用
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 jobs:
   publish-release:
     runs-on: ubuntu-latest
