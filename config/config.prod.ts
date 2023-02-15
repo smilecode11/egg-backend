@@ -2,7 +2,7 @@ import { EggAppConfig, PowerPartial } from 'egg';
 
 export default () => {
   const config: PowerPartial<EggAppConfig> = {};
-  config.baseUrl = 'http://127.0.0.1:7001';
+  config.baseUrl = 'http://127.0.0.1:7002';
 
   config.mongoose = {
     url: 'mongodb://smile-mongo:27017/mongoTest2',
@@ -31,9 +31,9 @@ export default () => {
   config.jwtExpires = '2 days';
   //  本地 url 替换
   config.giteeOauthConfig = {
-    redirectURL: 'http://120.26.167.109:7001/api/users/passport/gitee/callback',
+    redirectURL: 'http://120.26.167.109:7002/api/users/passport/gitee/callback',
   };
-  config.H5BaseURL = 'http://120.26.167.109:7001';
+  config.H5BaseURL = 'http://120.26.167.109:7002';
   //  配置对应的 jwt 事件
   config.jwtExpires = '2 days';
 

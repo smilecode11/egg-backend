@@ -13,6 +13,6 @@ COPY . /usr/src/app/
 # 执行 npm 命令, 转化 ts 为 js
 RUN npm run tsc
 # 暴露端口
-EXPOSE 7001
+EXPOSE 7002
 # 启动项目
 CMD npx egg-scripts start --title=smile-backend
