@@ -189,7 +189,9 @@ db.works.insertMany([
                 "backgroundSize" : "cover",
                 "height" : "666.6666666666666px"
             }
-        }
+        },
+        isTemplate: true,
+        isPublic: true
     }
 ])
 EOF
