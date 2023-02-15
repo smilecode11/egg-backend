@@ -1,4 +1,4 @@
-name: Publish Release 1
+name: Publish Release 2
 on: 
   # 在特定 tag 被 push 以后被调用
   push:
@@ -76,7 +76,6 @@ jobs:
             cd ~/smile-backend/
             docker-compose -f docker-compose-online.yml down
             docker-compose -f docker-compose-online.yml up -d
-            rm -rf .env
             docker logout registry.cn-hangzhou.aliyuncs.com
 
 
