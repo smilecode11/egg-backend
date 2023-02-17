@@ -1,7 +1,7 @@
 {
   "name": "smile-backend",
-  "version": "1.1.0",
-  "description": "乐高后端服务",
+  "version": "1.1.1",
+  "description": "smile后端服务",
   "private": true,
   "egg": {
     "typescript": true,

@@ -7,7 +7,7 @@ services:
       - '.docker-volumes/mongo/data:/data/db' # 映射数据到 .docker-volumes/mongo/data 中持续化存储数据
       - '$PWD/mongo-entrypoint/:/docker-entrypoint-initdb.d/' # 初始化脚本映射
     ports:
-      - 27018:27017
+      - 27017:27017
     env_file: # 读取本地的 env 文件中所有环境变量
       - .env
   smile-redis: 
@@ -16,13 +16,13 @@ services:
     command: >
       --requirepass ${REDIS_PASSWORD}
     ports: 
-      - 6378:6379
+      - 6379:6379
     env_file:
       - .env
   smile-backend:
-    image: registry.cn-hangzhou.aliyuncs.com/smiling/smile-backend:{{tag}}
+    image: registry.cn-hangzhou.aliyuncs.com/smiling/smile-backend:v1.1.0
     container_name: smile-backend
     ports:
-      - 7002:7001
+      - 7001:7001
     env_file:
       - .env
