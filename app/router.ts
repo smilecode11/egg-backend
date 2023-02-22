@@ -37,6 +37,7 @@ export default (app: Application) => {
   // router.post('/upload-img', jwt, controller.utils.uploadsByStreamPipeline);
   // router.post('/upload-img', jwt, controller.utils.uploadMutipleFilesToOSS);
   router.post('/upload-img', jwt, controller.utils.uploadToOSS);
+  router.post('/upload-img2', controller.utils.uploadToOSS);
   router.get('/pages/:id', controller.utils.renderH5Page);
 
 };

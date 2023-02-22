@@ -1,0 +1,1 @@
+db.works.insertMany([ { "title": "作品新增测试@装饰器验证用户输入", "desc": "未命名作品", "coverImg": "https://static.imooc-lego.com/upload-files/screenshot-480853.png", isTemplate: true, isPublic: true }])

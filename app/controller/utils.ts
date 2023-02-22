@@ -70,7 +70,11 @@ export default class UtilsController extends Controller {
       ctx.helper.success({ ctx, res: { name, url } });
     } catch (error) {
       await streamWormhole(stream);
-      ctx.helper.fail({ ctx, errorType: 'imageUploadFail' });
+      if ((error as any).code === 'MultipartFileTooLargeError') {
+        ctx.helper.fail({ ctx, errorType: 'imageUploadWithSizeFail' });
+      } else {
+        ctx.helper.fail({ ctx, errorType: 'imageUploadFail' });
+      }
     }
   }
 
