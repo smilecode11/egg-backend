@@ -78,6 +78,25 @@ export default class UtilsController extends Controller {
     }
   }
 
+  /** 上传图片 - oss*/
+  async uploadToOSS2() {
+    const { ctx } = this;
+    const stream = await ctx.getFileStream();
+    const savedOSSPath = join('backend2', nanoid(6) + extname(stream.filename));
+    try {
+      const result = await ctx.oss.put(savedOSSPath, stream);
+      const { url } = result;
+      ctx.helper.success({ ctx, res: { urls: [ url ] } });
+    } catch (error) {
+      await streamWormhole(stream);
+      if ((error as any).code === 'MultipartFileTooLargeError') {
+        ctx.helper.fail({ ctx, errorType: 'imageUploadWithSizeFail' });
+      } else {
+        ctx.helper.fail({ ctx, errorType: 'imageUploadFail' });
+      }
+    }
+  }
+
   /** 上传图片 - oss 多文件上传*/
   async uploadMutipleFilesToOSS() {
     const { ctx, app } = this;

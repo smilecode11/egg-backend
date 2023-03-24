@@ -46,6 +46,14 @@ export default class WorkController extends Controller {
     ctx.helper.success({ ctx, res: workData });
   }
 
+  /** 获取单个作品*/
+  async getWorkById() {
+    const { ctx } = this;
+    const { id } = ctx.params;
+    const res = await ctx.model.Work.findOne({ id: parseInt(id) });
+    ctx.helper.success({ ctx, res });
+  }
+
   /** 获取我的作品列表*/
   async myList() {
     const { ctx } = this;
@@ -82,7 +90,15 @@ export default class WorkController extends Controller {
       ...(pageIndex && { pageIndex: parseInt(pageIndex) }),
       ...(pageSize && { pageSize: parseInt(pageSize) }),
     };
-    const res = await ctx.service.work.getList(listCondition);
+    const res = (await ctx.service.work.getList(listCondition));
+    ctx.helper.success({ ctx, res });
+  }
+
+  /** 获取单个模板*/
+  async getTemplateById() {
+    const { ctx } = this;
+    const { id } = ctx.params;
+    const res = await ctx.model.Work.findOne({ id: parseInt(id), isTemplate: true });
     ctx.helper.success({ ctx, res });
   }
 
@@ -115,7 +131,7 @@ export default class WorkController extends Controller {
   }
 
   /** 发布作品/模板*/
-  @checkPermission('Work', 'workNoPermissionFail', { action: 'publish', key: 'id', value: { type: 'params', valueKey: 'id'} })
+  @checkPermission('Work', 'workNoPermissionFail', { action: 'publish', key: 'id', value: { type: 'params', valueKey: 'id' } })
   async publish(isTemplate: boolean) {
     const { ctx } = this;
     const url = await this.service.work.publish(ctx.params.id, isTemplate);

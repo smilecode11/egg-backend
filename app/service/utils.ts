@@ -2,7 +2,6 @@ import { Service } from 'egg';
 import { createSSRApp } from 'vue';
 import { renderToString } from '@vue/server-renderer';
 import LegoComponents from 'lego-components';
-
 export default class UtilsService extends Service {
 
   propsToStyle(props: {}) {

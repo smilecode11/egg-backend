@@ -20,7 +20,9 @@ export default (app: Application) => {
   //  作品相关
   router.post('/works', jwt, controller.work.createEmptyWork);
   router.get('/templates', controller.work.getTemplateList);
+  router.get('/templates/:id', controller.work.getTemplateById);
   router.get('/works', jwt, controller.work.myList);
+  router.get('/works/:id', controller.work.getWorkById);
   router.patch('/works/:id', jwt, controller.work.updateWork);
   router.delete('/works/:id', jwt, controller.work.deleteWork);
   router.post('/publish/:id', jwt, controller.work.publishWork);
@@ -38,6 +40,7 @@ export default (app: Application) => {
   // router.post('/upload-img', jwt, controller.utils.uploadMutipleFilesToOSS);
   router.post('/upload-img', jwt, controller.utils.uploadToOSS);
   router.post('/upload-img2', controller.utils.uploadToOSS);
+  router.post('/utils/upload-img', jwt, controller.utils.uploadToOSS2);
   router.get('/pages/:id', controller.utils.renderH5Page);
 
 };
