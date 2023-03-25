@@ -29,7 +29,7 @@ export default (app: Application) => {
   router.post('/publish-template/:id', jwt, controller.work.publishTemplate);
   //  作品 - 渠道(标签)
   router.post('/channels', jwt, controller.work.createChannel); //  给 work 添加 channel
-  router.get('/channels/:id', jwt, controller.work.getWorkChannels); //  获取 work 的 channels
+  router.get('/channels/getWorkChannels/:id', jwt, controller.work.getWorkChannels); //  获取 work 的 channels
   router.patch('/channels/:id', jwt, controller.work.updateWorkChannel);
   router.delete('/channels/:id', jwt, controller.work.deleteWorkChannel);
 

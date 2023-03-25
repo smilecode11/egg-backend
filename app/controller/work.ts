@@ -192,8 +192,8 @@ export default class WorkController extends Controller {
   async deleteWorkChannel() {
     const { ctx } = this;
     const { id } = ctx.params;
-    const selectWork = await ctx.model.Work.findOneAndUpdate({ 'channels.uuid': id }, { $pull: { channels: id } }, { new: true });
+    console.log('_deleteWorkChannel', id);
+    const selectWork = await ctx.model.Work.findOneAndUpdate({ 'channels.uuid': id }, { $pull: { channels: { uuid: id } } }, { new: true });
     ctx.helper.success({ ctx, res: selectWork });
   }
-
 }
