@@ -80,7 +80,7 @@ export default (appInfo: EggAppInfo) => {
   };
 
   config.cors = {
-    origin: 'http://localhost:8080',
+    origin: '*', // 'http://localhost:8080',
     allowMethods: 'GET,HEAD,PUT,OPTIONS,POST,DELETE,PATCH',
   };
 
