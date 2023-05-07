@@ -4,11 +4,13 @@
 
 import 'egg';
 import ExportUser from '../../../app/model/user';
+import ExportVbenRole from '../../../app/model/vbenRole';
 import ExportWork from '../../../app/model/work';
 
 declare module 'egg' {
   interface IModel {
     User: ReturnType<typeof ExportUser>;
+    VbenRole: ReturnType<typeof ExportVbenRole>;
     Work: ReturnType<typeof ExportWork>;
   }
 }

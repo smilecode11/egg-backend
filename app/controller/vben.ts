@@ -1,5 +1,15 @@
 import { Controller } from 'egg';
 import * as menuList from './datas/vbenMenuList.js';
+
+
+export interface IndexCondition {
+  pageIndex?: number;
+  pageSize?: number;
+  select?: string | string[];
+  // populate?: { path?: string, select?: string };
+  customSort?: Record<string, any>;
+  find?: Record<string, any>;
+}
 export default class VbenController extends Controller {
   // 登录
   async login() {
@@ -89,5 +99,63 @@ export default class VbenController extends Controller {
       },
     });
     // ctx.helper.fail({ ctx, errorType: 'sendVeriCodeFrequentlyFail' });
+  }
+
+
+  //  创建角色
+  async createRole() {
+    const { ctx } = this;
+    try {
+      const roleResp = await ctx.service.vbenRole.createRole(ctx.request.body);
+      // console.log('_createRole', roleResp);
+      ctx.helper.success({
+        ctx, res: {
+          id: roleResp.id,
+        },
+      });
+    } catch (error) {
+      ctx.helper.fail({ ctx, errorType: 'loginByGiteeCheckFail' });
+    }
+  }
+
+  //  获取角色列表
+  async getRoles() {
+    const { ctx } = this;
+    const { page: pageIndex, pageSize, roleName, status } = ctx.query;
+    const listCondition: IndexCondition = {
+      select: 'id roleName roleValue orderNo status remark createdAt',
+      find: {
+        ...(roleName && { roleName: { $regex: roleName, $options: 'i' } }),
+        ...(status && { status }),
+      },
+      ...(pageIndex && { pageIndex: parseInt(pageIndex) }),
+      ...(pageSize && { pageSize: parseInt(pageSize) }),
+    };
+    const res = (await ctx.service.vbenRole.getRoles(listCondition));
+    ctx.helper.success({ ctx, res });
+  }
+
+  //  编辑角色状态
+  async setRoleStatus() {
+    const { ctx } = this;
+    const res = await ctx.service.vbenRole.setRoleStatus(ctx.request.body);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 编辑角色
+  async editRole() {
+    const { ctx } = this;
+    const roleResp = await ctx.service.vbenRole.editRole(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: roleResp.id,
+      },
+    });
+  }
+
+  //  获取角色详情
+  async getRoleDetail() {
+    // const { ctx } = this;
+    //
   }
 }
