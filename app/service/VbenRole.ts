@@ -45,6 +45,17 @@ export default class VbenRoleService extends Service {
     };
   }
 
+  /** 删除角色*/
+  async deleteRole(payload: { id: number }) {
+    const { ctx } = this;
+    const { id } = payload;
+    const newId = id - 0;
+    await ctx.model.VbenRole.findOneAndUpdate({ id: newId }, { is_delete: '1' }, { new: true }).lean();
+    return {
+      id,
+    };
+  }
+
   /** 获取角色列表*/
   async getRoles(condition: IndexCondition) {
     const fCondition = { ...defaultCondition, ...condition };

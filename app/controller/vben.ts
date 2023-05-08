@@ -69,7 +69,7 @@ export default class VbenController extends Controller {
     ctx.helper.success({
       ctx,
       res: {
-        perm_code: [ '10001', '10002' ],
+        perm_code: ['10001', '10002'],
         message: 'userinfo ok',
       },
     });
@@ -125,6 +125,7 @@ export default class VbenController extends Controller {
     const listCondition: IndexCondition = {
       select: 'id roleName roleValue orderNo status remark createdAt',
       find: {
+        is_delete: '0',
         ...(roleName && { roleName: { $regex: roleName, $options: 'i' } }),
         ...(status && { status }),
       },
@@ -146,6 +147,17 @@ export default class VbenController extends Controller {
   async editRole() {
     const { ctx } = this;
     const roleResp = await ctx.service.vbenRole.editRole(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: roleResp.id,
+      },
+    });
+  }
+
+  //  删除角色
+  async deleteRole() {
+    const { ctx } = this;
+    const roleResp = await ctx.service.vbenRole.deleteRole(ctx.request.body) as any;
     ctx.helper.success({
       ctx, res: {
         id: roleResp.id,

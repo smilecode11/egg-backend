@@ -16,6 +16,7 @@ module.exports = (app: Application) => {
   router.post('/vben/api/system/createRole', controller.vben.createRole); //  创建角色
   router.post('/vben/api/system/setRoleStatus', controller.vben.setRoleStatus); // 编辑角色状态
   router.post('/vben/api/system/editRole', controller.vben.editRole); // 编辑角色
+  router.post('/vben/api/system/deleteRole', controller.vben.deleteRole);
   router.get('/vben/api/system/getRoles', controller.vben.getRoles); // 获取角色列表
   router.get('/vben/api/system/roles/:id', controller.vben.getRoleDetail); //  获取单个角色详情
 

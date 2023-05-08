@@ -10,6 +10,7 @@ export interface VbenRoleProps {
   menuList: string, //  菜单
   createdAt: Date;
   updatedAt: Date;
+  is_delete: '0' | '1'; //  账号标识, 0 表示正常, 1 表示已删除
 }
 
 function initVbenRoleModel(app: Application) {
@@ -20,6 +21,7 @@ function initVbenRoleModel(app: Application) {
     status: { type: String, default: '0' },
     remark: { type: String },
     menuList: { type: String },
+    is_delete: { type: String, default: '0' },
   }, {
     collection: 'vbenRoles',
     timestamps: true, // 自动更新 Date 属性
