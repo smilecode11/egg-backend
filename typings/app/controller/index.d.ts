@@ -9,7 +9,7 @@ import ExportUser from '../../../app/controller/user';
 import ExportUtils from '../../../app/controller/utils';
 import ExportVben from '../../../app/controller/vben';
 import ExportWork from '../../../app/controller/work';
-import ExportDatasVbenMenuList = require('../../../app/controller/datas/vbenMenuList');
+import ExportDatasVbenMenuList from '../../../app/controller/datas/vbenMenuList';
 
 declare module 'egg' {
   interface IController {

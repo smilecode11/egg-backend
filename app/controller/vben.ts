@@ -1,5 +1,6 @@
 import { Controller } from 'egg';
-import * as menuList from './datas/vbenMenuList.js';
+import * as menuList from './datas/vbenMenuList';
+// console.log('_menuList', menuList);
 
 
 export interface IndexCondition {
