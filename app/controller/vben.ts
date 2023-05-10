@@ -1,7 +1,6 @@
 import { Controller } from 'egg';
-import * as menuList from './datas/vbenMenuList';
-// console.log('_menuList', menuList);
-
+import menuList from './datas/vbenMenuList';
+// import allMenuList from './datas/vbenMenuAllList';
 
 export interface IndexCondition {
   pageIndex?: number;
@@ -55,7 +54,7 @@ export default class VbenController extends Controller {
     });
   }
 
-  // 获取用户权限列表
+  // 获取用户菜单
   async getMenuList() {
     const { ctx } = this;
     ctx.helper.success({
@@ -171,4 +170,82 @@ export default class VbenController extends Controller {
     // const { ctx } = this;
     //
   }
+
+  //  获取所有菜单
+  async getAllMenuList() {
+    const { ctx } = this;
+    const { status, menuName } = ctx.query;
+    const listCondition: IndexCondition = {
+      select: 'id menuName type parentMenu orderNo icon routePath component permission status isExt keepalive show menuEnName redirectRoutePath createdAt',
+      find: {
+        is_delete: '0',
+        ...(status && { status }),
+        ...(menuName && { menuName: { $regex: menuName, $options: 'i' } }),
+      },
+    };
+    const res = (await ctx.service.vbenMenu.getMenus(listCondition));
+    // console.log('_allMenu', res.items);
+    // TIP: 获得菜单 tree
+    const tree = getChild(getTop(res.items), res.items);
+    // console.log('_allMenu', tree);
+    ctx.helper.success({
+      ctx,
+      res: tree,
+    });
+  }
+
+  //  新增菜单
+  async addMenuItem() {
+    const { ctx } = this;
+    try {
+      const roleResp = await ctx.service.vbenMenu.createMenu(ctx.request.body);
+      ctx.helper.success({
+        ctx, res: {
+          id: roleResp.id,
+        },
+      });
+    } catch (error) {
+      console.log('_addMenuItem', error);
+      // ctx.helper.fail({ ctx, errorType: 'loginByGiteeCheckFail' });
+    }
+  }
+
+  //  编辑菜单
+  async editMenu() {
+    const { ctx } = this;
+    const roleResp = await ctx.service.vbenMenu.editMenu(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: roleResp.id,
+      },
+    });
+  }
+
+  //  删除菜单
+  async deleteMenu() {
+    const { ctx } = this;
+    const roleResp = await ctx.service.vbenMenu.deleteMenu(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: roleResp.id,
+      },
+    });
+  }
 }
+
+
+/** 获得顶级点*/
+function getTop(arry) {
+  return arry.filter(item => item.id === item.parentMenu || item.parentMenu === 0);
+}
+/** 获得子节点*/
+function getChild(pArry, arry) {
+  pArry.forEach(idt => {
+    idt.children = arry.filter(item => idt.id === item.parentMenu);
+    if ((idt.children).length > 0) {
+      getChild(idt.children, arry);
+    }
+  });
+  return pArry;
+}
+// getChild(getTop(adreeJson), adreeJson);

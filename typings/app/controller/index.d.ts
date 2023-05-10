@@ -9,6 +9,7 @@ import ExportUser from '../../../app/controller/user';
 import ExportUtils from '../../../app/controller/utils';
 import ExportVben from '../../../app/controller/vben';
 import ExportWork from '../../../app/controller/work';
+import ExportDatasVbenMenuAllList from '../../../app/controller/datas/vbenMenuAllList';
 import ExportDatasVbenMenuList from '../../../app/controller/datas/vbenMenuList';
 
 declare module 'egg' {
@@ -20,6 +21,7 @@ declare module 'egg' {
     vben: ExportVben;
     work: ExportWork;
     datas: {
+      vbenMenuAllList: ExportDatasVbenMenuAllList;
       vbenMenuList: ExportDatasVbenMenuList;
     }
   }

@@ -19,5 +19,8 @@ module.exports = (app: Application) => {
   router.post('/vben/api/system/deleteRole', controller.vben.deleteRole);
   router.get('/vben/api/system/getRoles', controller.vben.getRoles); // 获取角色列表
   router.get('/vben/api/system/roles/:id', controller.vben.getRoleDetail); //  获取单个角色详情
-
+  router.get('/vben/api/system/getAllMenu', controller.vben.getAllMenuList); // 获取所有菜单
+  router.post('/vben/api/system/addMenuItem', controller.vben.addMenuItem); // 新增菜单
+  router.post('/vben/api/system/editMenuItem', controller.vben.editMenu); // 新增菜单
+  router.post('/vben/api/system/deleteMenu', controller.vben.deleteMenu); // 删除菜单
 };
