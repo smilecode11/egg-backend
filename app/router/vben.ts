@@ -23,4 +23,9 @@ module.exports = (app: Application) => {
   router.post('/vben/api/system/addMenuItem', controller.vben.addMenuItem); // 新增菜单
   router.post('/vben/api/system/editMenuItem', controller.vben.editMenu); // 新增菜单
   router.post('/vben/api/system/deleteMenu', controller.vben.deleteMenu); // 删除菜单
+  router.get('/vben/api/system/getDeptList', controller.vben.getDepts); //  获取部门列表
+  router.get('/vben/api/system/getAllDept', controller.vben.getAllDepts); // 获取全部部门tree
+  router.post('/vben/api/system/addDept', controller.vben.createDept); // 新增部门
+  router.post('/vben/api/system/editDept', controller.vben.editDept); // 编辑部门
+  router.post('/vben/api/system/deleteDept', controller.vben.deleteDept); // 删除部门
 };

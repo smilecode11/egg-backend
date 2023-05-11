@@ -123,7 +123,7 @@ export default class VbenController extends Controller {
     const { ctx } = this;
     const { page: pageIndex, pageSize, roleName, status } = ctx.query;
     const listCondition: IndexCondition = {
-      select: 'id roleName roleValue orderNo status remark createdAt',
+      select: 'id roleName roleValue orderNo status remark createdAt menu',
       find: {
         is_delete: '0',
         ...(roleName && { roleName: { $regex: roleName, $options: 'i' } }),
@@ -185,8 +185,7 @@ export default class VbenController extends Controller {
     };
     const res = (await ctx.service.vbenMenu.getMenus(listCondition));
     // console.log('_allMenu', res.items);
-    // TIP: 获得菜单 tree
-    const tree = getChild(getTop(res.items), res.items);
+    const tree = getChild(getTop(res.items), res.items); // TIP: 获得菜单 tree
     // console.log('_allMenu', tree);
     ctx.helper.success({
       ctx,
@@ -231,19 +230,108 @@ export default class VbenController extends Controller {
       },
     });
   }
+
+
+  //  创建部门
+  async createDept() {
+    const { ctx } = this;
+    try {
+      const deptResp = await ctx.service.vbenDept.createDept(ctx.request.body);
+      // console.log('_createDept', deptResp);
+      ctx.helper.success({
+        ctx, res: {
+          id: deptResp.id,
+        },
+      });
+    } catch (error) {
+      ctx.helper.fail({ ctx, errorType: 'loginByGiteeCheckFail' });
+    }
+  }
+
+  //  获取部门列表
+  async getDepts() {
+    const { ctx } = this;
+    const { page: pageIndex, pageSize, deptName, status } = ctx.query;
+    const listCondition: IndexCondition = {
+      select: 'id deptName parentDept orderNo status remark createdAt',
+      find: {
+        is_delete: '0',
+        ...(deptName && { deptName: { $regex: deptName, $options: 'i' } }),
+        ...(status && { status }),
+      },
+      ...(pageIndex && { pageIndex: parseInt(pageIndex) }),
+      ...(pageSize && { pageSize: parseInt(pageSize) }),
+    };
+    const res = (await ctx.service.vbenDept.getDepts(listCondition));
+    ctx.helper.success({ ctx, res });
+  }
+
+  //  获取所有部门
+  async getAllDepts() {
+    const { ctx } = this;
+    const { deptName, status } = ctx.query;
+    const listCondition: IndexCondition = {
+      select: 'id deptName parentDept orderNo status remark createdAt',
+      find: {
+        is_delete: '0',
+        ...(deptName && { deptName: { $regex: deptName, $options: 'i' } }),
+        ...(status && { status }),
+      },
+    };
+    const res = (await ctx.service.vbenDept.getAllDepts(listCondition));
+    // console.log('_all depts', res.items);
+    const tree = getChild(getTop(res.items, 'parentDept', 'children'), res.items, 'parentDept', 'children'); // TIP: 获得部门 tree
+    ctx.helper.success({ ctx, res: tree });
+  }
+
+  //  编辑部门状态
+  async setDeptStatus() {
+    const { ctx } = this;
+    const res = await ctx.service.vbenDept.setDeptStatus(ctx.request.body);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 编辑部门
+  async editDept() {
+    const { ctx } = this;
+    const deptResp = await ctx.service.vbenDept.editDept(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: deptResp.id,
+      },
+    });
+  }
+
+  //  删除部门
+  async deleteDept() {
+    const { ctx } = this;
+    const deptResp = await ctx.service.vbenDept.deleteDept(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: deptResp.id,
+      },
+    });
+  }
+
+  //  获取部门详情
+  async getDeptDetail() {
+    // const { ctx } = this;
+    //
+  }
+
 }
 
 
 /** 获得顶级点*/
-function getTop(arry) {
-  return arry.filter(item => item.id === item.parentMenu || item.parentMenu === 0);
+function getTop(arry, parentKey = 'parentMenu', childrenKey = 'children') {
+  return arry.filter(item => item.id === item[parentKey] || item[parentKey] === 0);
 }
 /** 获得子节点*/
-function getChild(pArry, arry) {
+function getChild(pArry, arry, parentKey = 'parentMenu', childrenKey = 'children') {
   pArry.forEach(idt => {
-    idt.children = arry.filter(item => idt.id === item.parentMenu);
-    if ((idt.children).length > 0) {
-      getChild(idt.children, arry);
+    idt[childrenKey] = arry.filter(item => idt.id === item[parentKey]);
+    if ((idt[childrenKey]).length > 0) {
+      getChild(idt[childrenKey], arry, parentKey, childrenKey);
     }
   });
   return pArry;

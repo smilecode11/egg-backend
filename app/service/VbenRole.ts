@@ -16,13 +16,13 @@ export default class VbenRoleService extends Service {
   /** 新增角色*/
   async createRole(payload: VbenRoleProps) {
     const { ctx } = this;
-    const { roleName, roleValue, remark, status, menuList } = payload;
+    const { roleName, roleValue, remark, status, menu } = payload;
     const VbenRoleCreateData: Partial<VbenRoleProps> = {
       roleName,
       roleValue,
       remark,
       status,
-      menuList,
+      menu,
     };
     return ctx.model.VbenRole.create(VbenRoleCreateData);
   }
