@@ -44,6 +44,12 @@ function initVbenAccountModel(app: Application) {
     foreignField: 'roleValue',
     justOne: true,
   });
+  VbenAccountSchema.virtual('deptInfo', {
+    ref: 'VbenDept',
+    localField: 'dept',
+    foreignField: 'id',
+    justOne: true,
+  });
   VbenAccountSchema.plugin(AutoIncrement, { inc_field: 'id', id: 'vben_accounts_id_counter' });
   return app.mongoose.model<VbenAccountProps>('VbenAccount', VbenAccountSchema);
 }

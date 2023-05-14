@@ -2,6 +2,37 @@ import { Controller } from 'egg';
 import menuList from './datas/vbenMenuList';
 // import allMenuList from './datas/vbenMenuAllList';
 
+export const vbenErrorMessage = {
+  vbenInputValidateFail: {
+    errno: 301001,
+    message: '输入信息验证失败',
+  },
+  vbenAccountExistsFail: {
+    errno: 301002,
+    message: '用户已存在',
+  },
+  vbenLoginCheckFail: {
+    errno: 301003,
+    message: '用户名或密码验证失败',
+  },
+  vbenLoginValidateFail: {
+    errno: 301004,
+    message: '用户验证失败',
+  },
+  vbenSendVeriCodeFrequentlyFail: {
+    errno: 301005,
+    message: '请勿频繁获取短信验证码',
+  },
+  vbenSendVeriCodeFail: {
+    errno: 301007,
+    message: '发送验证码失败',
+  },
+  vbenLoginByCellphoneCheckFail: {
+    errno: 301006,
+    message: '验证码错误',
+  },
+};
+
 export interface IndexCondition {
   pageIndex?: number;
   pageSize?: number;
@@ -14,11 +45,51 @@ export default class VbenController extends Controller {
   // 登录
   async login() {
     const { ctx } = this;
+    const { username: account, password } = ctx.request.body;
+    const token = await ctx.service.vbenAccount.loginByAccount({ account, password });
+    if (token) {
+      ctx.helper.success({
+        ctx,
+        res: {
+          token,
+        },
+        msg: '登录成功',
+      });
+    } else {
+      ctx.helper.fail({
+        ctx,
+        errorType: 'vbenLoginCheckFail',
+      });
+    }
+  }
+  /** 获取 token, 存储位置 - header Authorization, 存储格式 - Bearer xxxx */
+  getTokenValue() {
+    const { ctx } = this;
+    const { authorization } = ctx.header;
+    if (!ctx.header || !authorization) return false;
+    if (typeof authorization === 'string') {
+      const parts = authorization.trim().split(' ');
+      if (parts.length === 2) {
+        const scheme = parts[0];
+        const credentials = parts[1];
+        if (/^Bearer$/i.test(scheme)) {
+          return credentials;
+        }
+      } else {
+        return false;
+      }
+    }
+  }
+  //  获取用户信息
+  async getUserInfo() {
+    const { ctx } = this;
+    // 获取用户信息
+    const infoResp = await ctx.service.vbenAccount.getAccountInfo();
     ctx.helper.success({
       ctx,
       res: {
-        token: 'xxxxxxvben-tokenxxxxx',
-        message: '登录成功',
+        ...infoResp,
+        roles: [],
       },
     });
   }
@@ -29,27 +100,6 @@ export default class VbenController extends Controller {
       ctx,
       res: {
         message: '登出成功',
-      },
-    });
-  }
-  //  获取用户信息
-  async getUserInfo() {
-    const { ctx } = this;
-    ctx.helper.success({
-      ctx,
-      res: {
-        roles: [],
-        // 用户id
-        userId: '0',
-        // 用户名
-        username: 'smiling',
-        // 真实名字
-        realName: '吴鹏',
-        // 头像
-        avatar: '',
-        // 介绍
-        desc: '测试用户',
-        message: 'userinfo ok',
       },
     });
   }
@@ -394,6 +444,24 @@ export default class VbenController extends Controller {
         id: accountResp.id,
       },
     });
+  }
+
+  async isAccountExist() {
+    const { ctx } = this;
+    const { account } = ctx.request.body;
+    const findResp = await ctx.model.VbenAccount.findOne({ account });
+    console.log('_findRes', findResp);
+    if (findResp) {
+      ctx.helper.fail({
+        ctx, errorType: 'vbenAccountExistsFail',
+      });
+    } else {
+      ctx.helper.success({
+        ctx, res: {
+          message: 'ok',
+        },
+      });
+    }
   }
 
   //  获取账号详情

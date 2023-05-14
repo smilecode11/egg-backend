@@ -2,10 +2,10 @@ import { Application } from 'egg';
 module.exports = (app: Application) => {
   const { controller, router } = app;
   // router.prefix('/vben/api'); //  指定路由前缀
-
+  const jwt = app.jwt as any;
   router.post('/vben/api/login', controller.vben.login);
+  router.get('/vben/api/getUserInfo', jwt, controller.vben.getUserInfo);
   router.get('/vben/api/logout', controller.vben.logout);
-  router.get('/vben/api/getUserInfo', controller.vben.getUserInfo);
   router.get('/vben/api/getPermCode', controller.vben.getPermCode); //  权限码
   router.get('/vben/api/getMenuList', controller.vben.getMenuList); //  菜单列表
   router.post('/vben/api/getSms', controller.vben.getSms);
@@ -34,4 +34,5 @@ module.exports = (app: Application) => {
   router.post('/vben/api/system/setAccountStatus', controller.vben.setAccountStatus); // 编辑角色状态
   router.post('/vben/api/system/editAccount', controller.vben.editAccount); // 编辑账号
   router.post('/vben/api/system/deleteAccount', controller.vben.deleteAccount); // 删除账号
+  router.post('/vben/api/system/isAccountExist', controller.vben.isAccountExist); // 账号是否存在
 };

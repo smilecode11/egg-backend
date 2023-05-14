@@ -73,5 +73,46 @@ export default class VbenAccountService extends Service {
       items: listRes,
     };
   }
+
+
+  /** 登录*/
+  async loginByAccount({ account, password }) {
+    const { app } = this;
+    //  1. 检查用户是否存在
+    const user = await this.findByAccount(account);
+    //  2. 检查密码是否正确, 正确返回 token
+    if (user && user.pwd === password) {
+      // 存储用户信息在 jwt 中
+      return app.jwt.sign({ account: user.account, _id: user._id }, app.config.jwt.secret, { expiresIn: app.config.jwtExpires });
+    }
+  }
+  //  查找账号是否存在
+  async findByAccount(account: string) {
+    return this.ctx.model.VbenAccount.findOne({ account });
+  }
+
+  /** 获取用户信息*/
+  async getAccountInfo() {
+    const { ctx } = this;
+    //  jwt 中的信息从 ctx.state 中获取 user
+    const { user } = ctx.state;
+    const userResp = await ctx.model.VbenAccount
+      .findById(user._id)
+      .select('nickname account email role dept id -_id')
+      .populate({ path: 'roleInfo', select: 'roleName menu -_id -roleValue' })
+      .populate({ path: 'deptInfo', select: 'deptName -id -_id' })
+      .lean();
+
+    if (userResp) {
+      const result = {
+        ...userResp,
+        ...(userResp as any).roleInfo,
+        ...(userResp as any).deptInfo,
+      };
+      delete result.roleInfo;
+      delete result.deptInfo;
+      return result;
+    }
+  }
 }
 

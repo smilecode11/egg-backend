@@ -2,9 +2,10 @@ import { Context } from 'egg';
 import { userErrorMessage } from '../controller/user';
 import { workErrorMessages } from '../controller/work';
 import { utilsErrorMessages } from '../controller/utils';
+import { vbenErrorMessage } from '../controller/vben';
 
-export type GlobalErrorTypes = keyof (typeof userErrorMessage & typeof workErrorMessages & typeof utilsErrorMessages & {});
-export const globalErrorMessages = { ...userErrorMessage, ...workErrorMessages, ...utilsErrorMessages };
+export type GlobalErrorTypes = keyof (typeof userErrorMessage & typeof workErrorMessages & typeof utilsErrorMessages & typeof vbenErrorMessage &{});
+export const globalErrorMessages = { ...userErrorMessage, ...workErrorMessages, ...utilsErrorMessages, ...vbenErrorMessage };
 
 interface RespType {
   ctx: Context;
