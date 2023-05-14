@@ -75,4 +75,21 @@ export default class VbenRoleService extends Service {
       items: listRes,
     };
   }
+  /** 获取全部角色列表*/
+  async getAllRoles(condition: IndexCondition) {
+    const fCondition = { ...defaultCondition, ...condition };
+    const { select, customSort, find } = fCondition;
+
+    const listRes = await this.ctx.model.VbenRole
+      .find(find).select(select)
+      .sort(customSort)
+      .lean();
+
+    const count = await this.ctx.model.VbenRole.find(find).count();
+    return {
+      count,
+      items: listRes,
+    };
+  }
 }
+

@@ -18,6 +18,7 @@ module.exports = (app: Application) => {
   router.post('/vben/api/system/editRole', controller.vben.editRole); // 编辑角色
   router.post('/vben/api/system/deleteRole', controller.vben.deleteRole);
   router.get('/vben/api/system/getRoles', controller.vben.getRoles); // 获取角色列表
+  router.get('/vben/api/system/getAllRoleList', controller.vben.getAllRole); // 获取全部角色
   router.get('/vben/api/system/roles/:id', controller.vben.getRoleDetail); //  获取单个角色详情
   router.get('/vben/api/system/getAllMenu', controller.vben.getAllMenuList); // 获取所有菜单
   router.post('/vben/api/system/addMenuItem', controller.vben.addMenuItem); // 新增菜单
@@ -28,4 +29,9 @@ module.exports = (app: Application) => {
   router.post('/vben/api/system/addDept', controller.vben.createDept); // 新增部门
   router.post('/vben/api/system/editDept', controller.vben.editDept); // 编辑部门
   router.post('/vben/api/system/deleteDept', controller.vben.deleteDept); // 删除部门
+  router.get('/vben/api/system/getAccountList', controller.vben.getAccountList); //  获取账号列表
+  router.post('/vben/api/system/addAccount', controller.vben.createAccount); // 新增账号
+  router.post('/vben/api/system/setAccountStatus', controller.vben.setAccountStatus); // 编辑角色状态
+  router.post('/vben/api/system/editAccount', controller.vben.editAccount); // 编辑账号
+  router.post('/vben/api/system/deleteAccount', controller.vben.deleteAccount); // 删除账号
 };

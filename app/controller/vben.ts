@@ -6,7 +6,7 @@ export interface IndexCondition {
   pageIndex?: number;
   pageSize?: number;
   select?: string | string[];
-  // populate?: { path?: string, select?: string };
+  populate?: { path?: string, select?: string };
   customSort?: Record<string, any>;
   find?: Record<string, any>;
 }
@@ -136,6 +136,18 @@ export default class VbenController extends Controller {
     ctx.helper.success({ ctx, res });
   }
 
+  async getAllRole() {
+    const { ctx } = this;
+    const listCondition: IndexCondition = {
+      select: 'id roleName roleValue orderNo status remark createdAt menu',
+      find: {
+        is_delete: '0',
+      },
+    };
+    const res = (await ctx.service.vbenRole.getAllRoles(listCondition));
+    ctx.helper.success({ ctx, res: res.items });
+  }
+
   //  编辑角色状态
   async setRoleStatus() {
     const { ctx } = this;
@@ -231,7 +243,6 @@ export default class VbenController extends Controller {
     });
   }
 
-
   //  创建部门
   async createDept() {
     const { ctx } = this;
@@ -319,6 +330,77 @@ export default class VbenController extends Controller {
     //
   }
 
+
+  //  创建账号
+  async createAccount() {
+    const { ctx } = this;
+    try {
+      const accountResp = await ctx.service.vbenAccount.createAccount(ctx.request.body);
+      ctx.helper.success({
+        ctx, res: {
+          id: accountResp.id,
+        },
+      });
+    } catch (error) {
+      ctx.helper.fail({ ctx, errorType: 'loginByGiteeCheckFail' });
+    }
+  }
+
+  //  获取账号列表
+  async getAccountList() {
+    const { ctx } = this;
+    const { page: pageIndex, pageSize, nickname, account, status, deptId } = ctx.query;
+    const listCondition: IndexCondition = {
+      select: 'id nickname status remark createdAt dept account email role pwd -_id',
+      populate: { path: 'roleInfo', select: 'roleName roleValue -_id' },
+      find: {
+        is_delete: '0',
+        ...(nickname && { nickname: { $regex: nickname, $options: 'i' } }),
+        ...(account && { account: { $regex: account, $options: 'i' } }),
+        ...(status && { status }),
+        ...(deptId && { dept: deptId }),
+      },
+      ...(pageIndex && { pageIndex: parseInt(pageIndex) }),
+      ...(pageSize && { pageSize: parseInt(pageSize) }),
+    };
+    const res = (await ctx.service.vbenAccount.getAccounts(listCondition));
+    ctx.helper.success({ ctx, res });
+  }
+
+  //  编辑账号状态
+  async setAccountStatus() {
+    const { ctx } = this;
+    const res = await ctx.service.vbenAccount.setAccountStatus(ctx.request.body);
+    ctx.helper.success({ ctx, res });
+  }
+
+  // 编辑账号
+  async editAccount() {
+    const { ctx } = this;
+    const accountResp = await ctx.service.vbenAccount.editAccount(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: accountResp.id,
+      },
+    });
+  }
+
+  //  删除账号
+  async deleteAccount() {
+    const { ctx } = this;
+    const accountResp = await ctx.service.vbenAccount.deleteAccount(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: accountResp.id,
+      },
+    });
+  }
+
+  //  获取账号详情
+  async getAccountDetail() {
+    // const { ctx } = this;
+    //
+  }
 }
 
 
