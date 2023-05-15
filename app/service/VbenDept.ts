@@ -7,7 +7,7 @@ const defaultCondition: Required<IndexCondition> = {
   pageIndex: 0,
   pageSize: 0,
   select: '',
-  // populate: {},
+  populate: {},
   customSort: { createdAt: -1 },
   find: {},
 };
@@ -71,7 +71,7 @@ export default class VbenDeptService extends Service {
 
     const count = await this.ctx.model.VbenDept.find(find).count();
     return {
-      count,
+      total: count,
       items: listRes,
     };
   }
@@ -88,7 +88,7 @@ export default class VbenDeptService extends Service {
 
     const count = await this.ctx.model.VbenDept.find(find).count();
     return {
-      count,
+      total: count,
       items: listRes,
     };
   }

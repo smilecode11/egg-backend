@@ -11,6 +11,10 @@ export const vbenErrorMessage = {
     errno: 301002,
     message: '用户已存在',
   },
+  vbenAccountOriginPasswordFail: {
+    errno: 301008,
+    message: '账号原密码错误',
+  },
   vbenLoginCheckFail: {
     errno: 301003,
     message: '用户名或密码验证失败',
@@ -104,6 +108,16 @@ export default class VbenController extends Controller {
     });
   }
 
+  /** 获取账号菜单*/
+  async getAccountMenuList() {
+    const { ctx } = this;
+    const menuList = await ctx.service.vbenAccount.getAccountMenuList();
+    // console.log('_menuList', menuList);
+    const tree = getChild(getTop(menuList, 'parentMenu', 'children'), menuList, 'parentMenu', 'children'); // 获得菜单树
+    // console.log('_ getAccountMenuList resp', tree);
+    ctx.helper.success({ ctx, res: tree });
+  }
+
   // 获取用户菜单
   async getMenuList() {
     const { ctx } = this;
@@ -119,38 +133,11 @@ export default class VbenController extends Controller {
     ctx.helper.success({
       ctx,
       res: {
-        perm_code: ['10001', '10002'],
+        perm_code: [ '10001', '10002' ],
         message: 'userinfo ok',
       },
     });
   }
-
-  //  获取验证码
-  async getSms() {
-    const { ctx } = this;
-    ctx.helper.success({
-      ctx,
-      res: {
-        smsCode: '1234',
-        message: '验证码发送成功, 请注意查收!',
-      },
-    });
-    // ctx.helper.fail({ ctx, errorType: 'sendVeriCodeFrequentlyFail' });
-  }
-
-  //  重置密码
-  async resetPassword() {
-    const { ctx } = this;
-    ctx.helper.success({
-      ctx,
-      res: {
-        account: ctx.request.body.account,
-        message: '密码重置成功!',
-      },
-    });
-    // ctx.helper.fail({ ctx, errorType: 'sendVeriCodeFrequentlyFail' });
-  }
-
 
   //  创建角色
   async createRole() {
@@ -435,6 +422,26 @@ export default class VbenController extends Controller {
     });
   }
 
+  // 修改密码
+  async editAccountPassword() {
+    const { ctx } = this;
+    const { user } = ctx.state;
+    const { passwordOld, passwordNew } = ctx.request.body;
+    // 获取用户对比
+    const currUser = await ctx.model.VbenAccount.findById(user._id);
+    // console.log('_currUser', currUser);
+    if (currUser) {
+      if (currUser.pwd === passwordOld) {
+        const resp = await ctx.model.VbenAccount.findOneAndUpdate({ _id: user._id }, { pwd: passwordNew });
+        if (resp) ctx.helper.success({ ctx, res: { msg: '密码修改成功' } });
+      } else {
+        ctx.helper.fail({ ctx, errorType: 'vbenAccountOriginPasswordFail' });
+      }
+    } else {
+      ctx.helper.fail({ ctx, errorType: 'vbenLoginCheckFail' });
+    }
+  }
+
   //  删除账号
   async deleteAccount() {
     const { ctx } = this;
@@ -446,6 +453,7 @@ export default class VbenController extends Controller {
     });
   }
 
+  //  账号是否存在
   async isAccountExist() {
     const { ctx } = this;
     const { account } = ctx.request.body;

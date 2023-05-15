@@ -7,7 +7,7 @@ const defaultCondition: Required<IndexCondition> = {
   pageIndex: 0,
   pageSize: 0,
   select: '',
-  // populate: {},
+  populate: {},
   customSort: { createdAt: -1 },
   find: {},
 };
@@ -64,7 +64,7 @@ export default class VbenMenuService extends Service {
 
     const count = await this.ctx.model.VbenMenu.find(find).count();
     return {
-      count,
+      total: count,
       items: listRes,
     };
   }

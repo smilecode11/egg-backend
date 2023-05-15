@@ -1,6 +1,7 @@
 import { Service } from 'egg';
 import { VbenAccountProps } from '../model/vbenAccount';
 import { IndexCondition } from '../controller/vben';
+import { VbenMenuProps } from '../model/vbenMenu';
 
 //  默认的检索条件
 const defaultCondition: Required<IndexCondition> = {
@@ -69,7 +70,7 @@ export default class VbenAccountService extends Service {
 
     const count = await this.ctx.model.VbenAccount.find(find).count();
     return {
-      count,
+      total: count,
       items: listRes,
     };
   }
@@ -112,6 +113,48 @@ export default class VbenAccountService extends Service {
       delete result.roleInfo;
       delete result.deptInfo;
       return result;
+    }
+  }
+
+  /** 获取用户菜单数据*/
+  async getAccountMenuList() {
+    const { ctx } = this;
+    const { user } = ctx.state;
+    // 1. 获取用户信息 -> menuId[] -> menuItem[] -> tree menuItem[]
+    const currUser = await ctx.model.VbenAccount
+      .findById(user._id)
+      .select('role dept nickname id')
+      .populate({ path: 'roleInfo', select: 'roleName menu' })
+      .populate({ path: 'deptInfo', select: 'deptName' })
+      .lean();
+    if (currUser) {
+      // console.log('_currUser', currUser);
+      const menuIds = (currUser as any).roleInfo.menu;
+      // console.log('_menuIds', menuIds);
+      const menuResp = await ctx.model.VbenMenu
+        .find({ id: { $in: menuIds } })
+        .select('-_id -_createdAt -_updatedAt -__v')
+        .lean();
+      // console.log('_menuResp', menuResp);
+      //  处理菜单数据
+      const tempMenu = menuResp.map((menuItem: VbenMenuProps & { id?: number }) => ({
+        id: menuItem.id,
+        parentMenu: menuItem.parentMenu,
+        name: menuItem.menuEnName,
+        path: menuItem.routePath,
+        component: menuItem.component || 'LAYOUT',
+        ...(menuItem.redirectRoutePath && { redirect: menuItem.redirectRoutePath }),
+        meta: {
+          title: menuItem.menuName,
+          orderNo: menuItem.orderNo,
+          ignoreKeepAlive: menuItem.keepalive === '0',
+          showMenu: menuItem.show === '0',
+          hideMenu: menuItem.show === '1',
+          ...(menuItem.icon && { icon: menuItem.icon }),
+        },
+      }));
+      // console.log('_menuResp', menuResp, tempMenu);
+      return tempMenu;
     }
   }
 }
