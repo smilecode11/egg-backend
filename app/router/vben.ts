@@ -34,6 +34,6 @@ module.exports = (app: Application) => {
   router.post('/vben/api/system/deleteAccount', jwt, controller.vben.deleteAccount); // 删除账号
   router.post('/vben/api/system/isAccountExist', jwt, controller.vben.isAccountExist); // 账号是否存在
   router.post('/vben/api/system/editPassword', jwt, controller.vben.editAccountPassword); // 修改密码
-  router.post('/vben/api/system/getAccountMenuList', jwt, controller.vben.getAccountMenuList);
+  router.post('/vben/api/system/getAccountMenuList', jwt, controller.vben.getAccountMenuList); //  获取账号菜单列表
 
 };

@@ -111,9 +111,12 @@ export default class VbenController extends Controller {
   /** 获取账号菜单*/
   async getAccountMenuList() {
     const { ctx } = this;
+    // 菜单基础数据构建
     const menuList = await ctx.service.vbenAccount.getAccountMenuList();
-    // console.log('_menuList', menuList);
+    // 菜单层级构建
     const tree = getChild(getTop(menuList, 'parentMenu', 'children'), menuList, 'parentMenu', 'children'); // 获得菜单树
+    // 菜单排序
+    tree.sort((a, b) => b.meta.orderNo - a.meta.orderNo);
     // console.log('_ getAccountMenuList resp', tree);
     ctx.helper.success({ ctx, res: tree });
   }
@@ -133,7 +136,7 @@ export default class VbenController extends Controller {
     ctx.helper.success({
       ctx,
       res: {
-        perm_code: [ '10001', '10002' ],
+        perm_code: ['10001', '10002'],
         message: 'userinfo ok',
       },
     });
