@@ -35,5 +35,7 @@ module.exports = (app: Application) => {
   router.post('/vben/api/system/isAccountExist', jwt, controller.vben.isAccountExist); // 账号是否存在
   router.post('/vben/api/system/editPassword', jwt, controller.vben.editAccountPassword); // 修改密码
   router.post('/vben/api/system/getAccountMenuList', jwt, controller.vben.getAccountMenuList); //  获取账号菜单列表
+  router.get('/vben/api/system/getMenuListByPage', jwt, controller.vben.getMenuListByPage); //  获取菜单列表
+  router.post('/vben/api/utils/uploadImage', jwt, controller.utils.uploadToOSS);
 
 };

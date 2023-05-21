@@ -116,6 +116,27 @@ export default class VbenAccountService extends Service {
     }
   }
 
+  /** 获取账号列表*/
+  async getAccountMenuListByPage(condition: IndexCondition) {
+    const fCondition = { ...defaultCondition, ...condition };
+    const { pageIndex, pageSize, select/* , populate */, customSort, find } = fCondition;
+    const skip = (pageSize * (pageIndex - 1));
+
+    const listRes = await this.ctx.model.VbenMenu
+      .find(find).select(select)/* .populate(populate) */
+      .skip(skip)
+      .limit(pageSize)
+      .sort(customSort)
+      .lean();
+
+    const count = await this.ctx.model.VbenMenu.find(find).count();
+    return {
+      total: count,
+      items: listRes,
+    };
+  }
+
+
   /** 获取用户菜单数据*/
   async getAccountMenuList() {
     const { ctx } = this;
@@ -132,7 +153,7 @@ export default class VbenAccountService extends Service {
       const menuIds = (currUser as any).roleInfo.menu;
       // console.log('_menuIds', menuIds);
       const menuResp = await ctx.model.VbenMenu
-        .find({ id: { $in: menuIds } })
+        .find({ id: { $in: menuIds }, status: '0', is_delete: '0' })
         .select('-_id -_createdAt -_updatedAt -__v')
         .lean();
       // console.log('_menuResp', menuResp);

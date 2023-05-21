@@ -121,6 +121,24 @@ export default class VbenController extends Controller {
     ctx.helper.success({ ctx, res: tree });
   }
 
+  /** 获取菜单列表*/
+  async getMenuListByPage() {
+    const { ctx } = this;
+    const { page: pageIndex, pageSize, menuName, status } = ctx.query;
+    const listCondition: IndexCondition = {
+      select: 'id menuName icon status remark createdAt updatedAt show keepalive component orderNo -_id',
+      find: {
+        is_delete: '0',
+        ...(menuName && { menuName: { $regex: menuName, $options: 'i' } }),
+        ...(status && { status }),
+      },
+      ...(pageIndex && { pageIndex: parseInt(pageIndex) }),
+      ...(pageSize && { pageSize: parseInt(pageSize) }),
+    };
+    const menu = await ctx.service.vbenAccount.getAccountMenuListByPage(listCondition);
+    ctx.helper.success({ ctx, res: menu });
+  }
+
   // 获取用户菜单
   async getMenuList() {
     const { ctx } = this;
