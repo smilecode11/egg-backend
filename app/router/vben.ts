@@ -8,8 +8,7 @@ module.exports = (app: Application) => {
   router.get('/vben/api/getUserInfo', jwt, controller.vben.getUserInfo);
   router.get('/vben/api/getPermCode', jwt, controller.vben.getPermCode); //  权限码
   router.get('/vben/api/getMenuList', jwt, controller.vben.getMenuList); //  菜单列表
-
-
+  router.post('/vben/api/utils/uploadImage', jwt, controller.utils.uploadToOSS); //  上传
   // 系统设置相关
   router.post('/vben/api/system/createRole', jwt, controller.vben.createRole); //  创建角色
   router.post('/vben/api/system/setRoleStatus', jwt, controller.vben.setRoleStatus); // 编辑角色状态
@@ -36,6 +35,5 @@ module.exports = (app: Application) => {
   router.post('/vben/api/system/editPassword', jwt, controller.vben.editAccountPassword); // 修改密码
   router.post('/vben/api/system/getAccountMenuList', jwt, controller.vben.getAccountMenuList); //  获取账号菜单列表
   router.get('/vben/api/system/getMenuListByPage', jwt, controller.vben.getMenuListByPage); //  获取菜单列表
-  router.post('/vben/api/utils/uploadImage', jwt, controller.utils.uploadToOSS);
 
 };
