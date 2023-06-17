@@ -3,9 +3,10 @@ import { userErrorMessage } from '../controller/user';
 import { workErrorMessages } from '../controller/work';
 import { utilsErrorMessages } from '../controller/utils';
 import { vbenErrorMessage } from '../controller/vben';
+import { pureErrorMessage } from '../controller/pure';
 
-export type GlobalErrorTypes = keyof (typeof userErrorMessage & typeof workErrorMessages & typeof utilsErrorMessages & typeof vbenErrorMessage &{});
-export const globalErrorMessages = { ...userErrorMessage, ...workErrorMessages, ...utilsErrorMessages, ...vbenErrorMessage };
+export type GlobalErrorTypes = keyof (typeof userErrorMessage & typeof workErrorMessages & typeof utilsErrorMessages & typeof vbenErrorMessage & typeof pureErrorMessage &{});
+export const globalErrorMessages = { ...userErrorMessage, ...workErrorMessages, ...utilsErrorMessages, ...vbenErrorMessage, ...pureErrorMessage };
 
 interface RespType {
   ctx: Context;
