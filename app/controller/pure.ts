@@ -36,7 +36,7 @@ export default class PureController extends Controller {
       res: pureMenuList,
     });
   }
-  //  创建角色
+  /** 创建角色*/
   async createRole() {
     const { ctx } = this;
     try {
@@ -51,8 +51,7 @@ export default class PureController extends Controller {
       ctx.helper.fail({ ctx, errorType: 'pureCreateRoleFail' });
     }
   }
-
-  //  获取角色列表
+  /** 获取角色列表*/
   async getRoleList() {
     const { ctx } = this;
     const { currentPage: pageIndex, pageSize, name, code, status } = ctx.request.body;
@@ -73,15 +72,13 @@ export default class PureController extends Controller {
       res,
     });
   }
-
-  // 编辑角色状态
+  /** 编辑角色状态*/
   async setRoleStatus() {
     const { ctx } = this;
     const res = await ctx.service.pureRole.setRoleStatus(ctx.request.body);
     ctx.helper.success({ ctx, res });
   }
-
-  // 编辑角色
+  /** 编辑角色*/
   async editRole() {
     const { ctx } = this;
     const roleResp = await ctx.service.pureRole.editRole(ctx.request.body) as any;
@@ -91,6 +88,94 @@ export default class PureController extends Controller {
       },
     });
   }
+  /** 删除角色*/
+  async deleteRole() {
+    const { ctx } = this;
+    const roleResp = await ctx.service.pureRole.deleteRole(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: roleResp.id,
+      },
+    });
+  }
+  /** 新建菜单*/
+  async createMenu() {
+    const { ctx } = this;
+    const roleResp = await ctx.service.pureMenu.createMenu(ctx.request.body);
+    console.log('_createMenu', roleResp);
+    ctx.helper.success({
+      ctx, res: {
+        id: roleResp.id,
+      },
+    });
+  }
+  /** 获取菜单列表*/
+  async getMenuList() {
+    //
+  }
+  /** 获取全部菜单(层级)*/
+  async getAllMenuWithLevel() {
+    const { ctx } = this;
+    const { status, title, name } = ctx.query;
+    const listCondition: IndexCondition = {
+      select: 'id title name type parentMenu routePath status keepAlive redirectRoutePath createdAt icon',
+      find: {
+        is_delete: '0',
+        ...(status && { status }),
+        ...(title && { title: { $regex: title, $options: 'i' } }),
+        ...(name && { name: { $regex: name, $options: 'i' } }),
+      },
+    };
+    const res = (await ctx.service.pureMenu.getMenus(listCondition));
+    // console.log('_allMenu', res.items);
+    const tree = getChild(getTop(res.items), res.items);
+    // console.log('_allMenu', tree);
+    ctx.helper.success({
+      ctx,
+      res: tree,
+    });
+  }
+  /** 编辑菜单状态*/
+  async setMenuStatus() {
+    const { ctx } = this;
+    const res = await ctx.service.pureMenu.setMenuStatus(ctx.request.body);
+    ctx.helper.success({ ctx, res });
+  }
+  /** 编辑菜单*/
+  async editMenuItem() {
+    const { ctx } = this;
+    const roleResp = await ctx.service.pureMenu.editMenuItem(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: roleResp.id,
+      },
+    });
+  }
+  /** 删除菜单*/
+  async deleteMenu() {
+    const { ctx } = this;
+    const roleResp = await ctx.service.pureMenu.deleteMenu(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: roleResp.id,
+      },
+    });
+  }
+}
+
+/** 获得顶级点*/
+function getTop(arry, parentKey = 'parentMenu', childrenKey = 'children') {
+  return arry.filter(item => item.id === item[parentKey] || item[parentKey] === 0);
+}
+/** 获得子节点*/
+function getChild(pArry, arry, parentKey = 'parentMenu', childrenKey = 'children') {
+  pArry.forEach(idt => {
+    idt[childrenKey] = arry.filter(item => idt.id === item[parentKey]);
+    if ((idt[childrenKey]).length > 0) {
+      getChild(idt[childrenKey], arry, parentKey, childrenKey);
+    }
+  });
+  return pArry;
 }
 
 export const pureErrorMessage = {

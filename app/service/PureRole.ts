@@ -71,7 +71,7 @@ export default class PureRoleService extends Service {
     const { ctx } = this;
     const { id } = payload;
     const newId = id - 0;
-    await ctx.model.VbenRole.findOneAndUpdate({ id: newId }, { is_delete: '1' }, { new: true }).lean();
+    await ctx.model.PureRole.findOneAndUpdate({ id: newId }, { is_delete: '1' }, { new: true }).lean();
     return {
       id,
     };

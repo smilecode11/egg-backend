@@ -14,6 +14,13 @@ export default [
         },
       },
       {
+        path: '/system/menu/index',
+        name: 'SystemMenu',
+        meta: {
+          title: '菜单管理',
+        },
+      },
+      {
         path: '/system/dept/index',
         name: 'SystemDept',
         meta: {

@@ -15,14 +15,15 @@ module.exports = (app: Application) => {
   router.post('/pureApi/createRole', controller.pure.createRole); //  创建角色
   router.post('/pureApi/setRoleStatus', controller.pure.setRoleStatus); // 编辑角色状态
   router.post('/pureApi/editRole', controller.pure.editRole); // 编辑角色
-  // router.post('/vben/api/system/deleteRole', jwt, controller.vben.deleteRole);
-  // router.get('/vben/api/system/getRoles', jwt, controller.vben.getRoles); // 获取角色列表
+  router.post('/pureApi/deleteRole', controller.pure.deleteRole);
+  router.post('/pureApi/createMenu', controller.pure.createMenu); // 新增菜单
+  router.post('/pureApi/getAllMenuWithLevel', controller.pure.getAllMenuWithLevel); // 获取所有菜单(层级)
+  router.post('/pureApi/setMenuStatus', controller.pure.setMenuStatus); //  修改菜单状态
+  router.post('/pureApi/editMenuItem', controller.pure.editMenuItem); // 新增菜单
+  router.post('/pureApi/deleteMenu', controller.pure.deleteMenu); // 删除菜单
+  // router.get('/vben/api/system/getRoles', controller.vben.getRoles); // 获取角色列表
   // router.get('/vben/api/system/getAllRoleList', jwt, controller.vben.getAllRole); // 获取全部角色
   // router.get('/vben/api/system/roles/:id', jwt, controller.vben.getRoleDetail); //  获取单个角色详情
-  //   router.get('/vben/api/system/getAllMenu', jwt, controller.vben.getAllMenuList); // 获取所有菜单
-  //   router.post('/vben/api/system/addMenuItem', jwt, controller.vben.addMenuItem); // 新增菜单
-  //   router.post('/vben/api/system/editMenuItem', jwt, controller.vben.editMenu); // 新增菜单
-  //   router.post('/vben/api/system/deleteMenu', jwt, controller.vben.deleteMenu); // 删除菜单
   //   router.get('/vben/api/system/getDeptList', jwt, controller.vben.getDepts); //  获取部门列表
   //   router.get('/vben/api/system/getAllDept', jwt, controller.vben.getAllDepts); // 获取全部部门tree
   //   router.post('/vben/api/system/addDept', jwt, controller.vben.createDept); // 新增部门
