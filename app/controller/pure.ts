@@ -102,7 +102,7 @@ export default class PureController extends Controller {
   async createMenu() {
     const { ctx } = this;
     const roleResp = await ctx.service.pureMenu.createMenu(ctx.request.body);
-    console.log('_createMenu', roleResp);
+    // console.log('_createMenu', roleResp);
     ctx.helper.success({
       ctx, res: {
         id: roleResp.id,
@@ -161,10 +161,70 @@ export default class PureController extends Controller {
       },
     });
   }
+  /** 新建部门*/
+  async createDept() {
+    const { ctx } = this;
+    const roleResp = await ctx.service.pureDept.createDept(ctx.request.body);
+    ctx.helper.success({
+      ctx, res: {
+        id: roleResp.id,
+      },
+    });
+  }
+  /** 获取部门列表*/
+  async getDeptList() {
+    //
+  }
+  /** 获取全部部门(层级)*/
+  async getAllDeptWithLevel() {
+    const { ctx } = this;
+    const { status, name } = ctx.request.body;
+    const listCondition: IndexCondition = {
+      select: 'id name head headMobile headEmail parentDept status createdAt',
+      find: {
+        is_delete: '0',
+        ...(status && { status }),
+        ...(name && { name: { $regex: name, $options: 'i' } }),
+      },
+    };
+    const res = (await ctx.service.pureDept.getDepts(listCondition));
+    // console.log('_items', res.items);
+    const tree = getChild(getTop(res.items, 'parentDept'), res.items, 'parentDept');
+    ctx.helper.success({
+      ctx,
+      res: tree,
+    });
+  }
+  /** 编辑部门状态*/
+  async setDeptStatus() {
+    const { ctx } = this;
+    const res = await ctx.service.pureDept.setDeptStatus(ctx.request.body);
+    ctx.helper.success({ ctx, res });
+  }
+  /** 编辑部门*/
+  async editDeptItem() {
+    const { ctx } = this;
+    const roleResp = await ctx.service.pureDept.editDeptItem(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: roleResp.id,
+      },
+    });
+  }
+  /** 删除部门*/
+  async deleteDept() {
+    const { ctx } = this;
+    const roleResp = await ctx.service.pureDept.deleteDept(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: roleResp.id,
+      },
+    });
+  }
 }
 
 /** 获得顶级点*/
-function getTop(arry, parentKey = 'parentMenu', childrenKey = 'children') {
+function getTop(arry, parentKey = 'parentMenu') {
   return arry.filter(item => item.id === item[parentKey] || item[parentKey] === 0);
 }
 /** 获得子节点*/

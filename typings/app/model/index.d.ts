@@ -3,6 +3,7 @@
 /* eslint-disable */
 
 import 'egg';
+import ExportPureDept from '../../../app/model/pureDept';
 import ExportPureMenu from '../../../app/model/pureMenu';
 import ExportPureRole from '../../../app/model/pureRole';
 import ExportUser from '../../../app/model/user';
@@ -14,6 +15,7 @@ import ExportWork from '../../../app/model/work';
 
 declare module 'egg' {
   interface IModel {
+    PureDept: ReturnType<typeof ExportPureDept>;
     PureMenu: ReturnType<typeof ExportPureMenu>;
     PureRole: ReturnType<typeof ExportPureRole>;
     User: ReturnType<typeof ExportUser>;

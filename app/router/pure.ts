@@ -21,14 +21,11 @@ module.exports = (app: Application) => {
   router.post('/pureApi/setMenuStatus', controller.pure.setMenuStatus); //  修改菜单状态
   router.post('/pureApi/editMenuItem', controller.pure.editMenuItem); // 新增菜单
   router.post('/pureApi/deleteMenu', controller.pure.deleteMenu); // 删除菜单
-  // router.get('/vben/api/system/getRoles', controller.vben.getRoles); // 获取角色列表
-  // router.get('/vben/api/system/getAllRoleList', jwt, controller.vben.getAllRole); // 获取全部角色
-  // router.get('/vben/api/system/roles/:id', jwt, controller.vben.getRoleDetail); //  获取单个角色详情
-  //   router.get('/vben/api/system/getDeptList', jwt, controller.vben.getDepts); //  获取部门列表
-  //   router.get('/vben/api/system/getAllDept', jwt, controller.vben.getAllDepts); // 获取全部部门tree
-  //   router.post('/vben/api/system/addDept', jwt, controller.vben.createDept); // 新增部门
-  //   router.post('/vben/api/system/editDept', jwt, controller.vben.editDept); // 编辑部门
-  //   router.post('/vben/api/system/deleteDept', jwt, controller.vben.deleteDept); // 删除部门
+  router.post('/pureApi/createDept', controller.pure.createDept); // 新增部门
+  router.post('/pureApi/getAllDeptWithLevel', controller.pure.getAllDeptWithLevel); // 获取所有部门(层级)
+  router.post('/pureApi/setDeptStatus', controller.pure.setDeptStatus); //  修改部门状态
+  router.post('/pureApi/editDeptItem', controller.pure.editDeptItem); // 新增部门
+  router.post('/pureApi/deleteDept', controller.pure.deleteDept); // 删除部门
   //   router.get('/vben/api/system/getAccountList', jwt, controller.vben.getAccountList); //  获取账号列表
   //   router.post('/vben/api/system/addAccount', jwt, controller.vben.createAccount); // 新增账号
   //   router.post('/vben/api/system/setAccountStatus', jwt, controller.vben.setAccountStatus); // 编辑角色状态
