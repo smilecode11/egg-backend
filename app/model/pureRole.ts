@@ -33,7 +33,7 @@ function initPureRoleModel(app: Application) {
     },
   });
   PureRoleSchema.plugin(AutoIncrement, { inc_field: 'id', id: 'pure_roles_id_counter' });
-  return app.mongoose.model<PureRoleProps>('pureRole', PureRoleSchema);
+  return app.mongoose.model<PureRoleProps>('PureRole', PureRoleSchema);
 }
 
 export default initPureRoleModel;

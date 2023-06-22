@@ -171,10 +171,6 @@ export default class PureController extends Controller {
       },
     });
   }
-  /** 获取部门列表*/
-  async getDeptList() {
-    //
-  }
   /** 获取全部部门(层级)*/
   async getAllDeptWithLevel() {
     const { ctx } = this;
@@ -221,6 +217,113 @@ export default class PureController extends Controller {
       },
     });
   }
+  //  创建账号
+  async createAccount() {
+    const { ctx } = this;
+    try {
+      const accountResp = await ctx.service.pureAccount.createAccount(ctx.request.body);
+      ctx.helper.success({
+        ctx, res: {
+          id: accountResp.id,
+        },
+      });
+    } catch (error) {
+      ctx.helper.fail({ ctx, errorType: 'pureTempFail' });
+    }
+  }
+  //  获取账号列表
+  async getAccountList() {
+    const { ctx } = this;
+    const { currentPage: pageIndex, pageSize, nickname, account, status, deptId } = ctx.request.body;
+    const listCondition: IndexCondition = {
+      select: 'id nickname status remark createdAt dept phone account email role pwd -_id',
+      find: {
+        is_delete: '0',
+        ...(nickname && { nickname: { $regex: nickname, $options: 'i' } }),
+        ...(account && { account: { $regex: account, $options: 'i' } }),
+        ...(status && { status }),
+        ...(deptId && { dept: deptId }),
+      },
+      ...(pageIndex && { pageIndex: parseInt(pageIndex) }),
+      ...(pageSize && { pageSize: parseInt(pageSize) }),
+    };
+    const res = (await ctx.service.pureAccount.getAccounts(listCondition));
+    ctx.helper.success({ ctx, res });
+  }
+  //  编辑账号状态
+  async setAccountStatus() {
+    const { ctx } = this;
+    const res = await ctx.service.pureAccount.setAccountStatus(ctx.request.body);
+    ctx.helper.success({ ctx, res });
+  }
+  // 编辑账号
+  async editAccount() {
+    const { ctx } = this;
+    const accountResp = await ctx.service.pureAccount.editAccount(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: accountResp.id,
+      },
+    });
+  }
+  // 修改密码
+  async editAccountPassword() {
+    const { ctx } = this;
+    const { user } = ctx.state;
+    const { passwordOld, passwordNew } = ctx.request.body;
+    // 获取用户对比
+    const currUser = await ctx.model.pureAccount.findById(user._id);
+    // console.log('_currUser', currUser);
+    if (currUser) {
+      if (currUser.pwd === passwordOld) {
+        const resp = await ctx.model.pureAccount.findOneAndUpdate({ _id: user._id }, { pwd: passwordNew });
+        if (resp) ctx.helper.success({ ctx, res: { msg: '密码修改成功' } });
+      } else {
+        ctx.helper.fail({ ctx, errorType: 'pureAccountOriginPasswordFail' });
+      }
+    } else {
+      ctx.helper.fail({ ctx, errorType: 'vbenLoginCheckFail' });
+    }
+  }
+  //  删除账号
+  async deleteAccount() {
+    const { ctx } = this;
+    const accountResp = await ctx.service.pureAccount.deleteAccount(ctx.request.body) as any;
+    ctx.helper.success({
+      ctx, res: {
+        id: accountResp.id,
+      },
+    });
+  }
+  //  账号是否存在
+  async isAccountExist() {
+    const { ctx } = this;
+    const { account } = ctx.request.body;
+    const findResp = await ctx.model.pureAccount.findOne({ account });
+    console.log('_findRes', findResp);
+    if (findResp) {
+      ctx.helper.fail({
+        ctx, errorType: 'pureAccountExistsFail',
+      });
+    } else {
+      ctx.helper.success({
+        ctx, res: {
+          message: 'ok',
+        },
+      });
+    }
+  }
+  /** 获取账号菜单*/
+  async getAccountMenuList() {
+    const { ctx } = this;
+    // 菜单基础数据构建
+    const menuList = await ctx.service.pureAccount.getAccountMenuList();
+    // 菜单层级构建
+    const tree = getChild(getTop(menuList, 'parentMenu'), menuList, 'parentMenu', 'children'); // 获得菜单树
+    // 菜单排序
+    tree.sort((a, b) => b.meta.orderNo - a.meta.orderNo);
+    ctx.helper.success({ ctx, res: tree });
+  }
 }
 
 /** 获得顶级点*/
@@ -239,6 +342,10 @@ function getChild(pArry, arry, parentKey = 'parentMenu', childrenKey = 'children
 }
 
 export const pureErrorMessage = {
+  pureTempFail: {
+    errno: 301099,
+    message: '临时失败',
+  },
   pureInputValidateFail: {
     errno: 301001,
     message: '输入信息验证失败',

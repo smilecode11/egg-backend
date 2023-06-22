@@ -26,14 +26,13 @@ module.exports = (app: Application) => {
   router.post('/pureApi/setDeptStatus', controller.pure.setDeptStatus); //  修改部门状态
   router.post('/pureApi/editDeptItem', controller.pure.editDeptItem); // 新增部门
   router.post('/pureApi/deleteDept', controller.pure.deleteDept); // 删除部门
-  //   router.get('/vben/api/system/getAccountList', jwt, controller.vben.getAccountList); //  获取账号列表
-  //   router.post('/vben/api/system/addAccount', jwt, controller.vben.createAccount); // 新增账号
-  //   router.post('/vben/api/system/setAccountStatus', jwt, controller.vben.setAccountStatus); // 编辑角色状态
-  //   router.post('/vben/api/system/editAccount', jwt, controller.vben.editAccount); // 编辑账号
-  //   router.post('/vben/api/system/deleteAccount', jwt, controller.vben.deleteAccount); // 删除账号
-  //   router.post('/vben/api/system/isAccountExist', jwt, controller.vben.isAccountExist); // 账号是否存在
-  //   router.post('/vben/api/system/editPassword', jwt, controller.vben.editAccountPassword); // 修改密码
-  //   router.post('/vben/api/system/getAccountMenuList', jwt, controller.vben.getAccountMenuList); //  获取账号菜单列表
-  //   router.get('/vben/api/system/getMenuListByPage', jwt, controller.vben.getMenuListByPage); //  获取菜单列表
+  router.post('/pureApi/getAccountList', controller.pure.getAccountList); //  获取账号列表
+  router.post('/pureApi/createAccount', controller.pure.createAccount); // 新增账号
+  router.post('/pureApi/setAccountStatus', controller.pure.setAccountStatus); // 编辑角色状态
+  router.post('/pureApi/editAccount', controller.pure.editAccount); // 编辑账号
+  router.post('/pureApi/deleteAccount', controller.pure.deleteAccount); // 删除账号
+  router.post('/pureApi/isAccountExist', controller.pure.isAccountExist); // 账号是否存在
+  router.post('/pureApi/editPassword', controller.pure.editAccountPassword); // 修改密码
+  router.post('/pureApi/getAccountMenuList', controller.pure.getAccountMenuList); //  获取账号菜单列表
 
 };

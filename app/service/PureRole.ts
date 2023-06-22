@@ -31,11 +31,13 @@ export default class PureRoleService extends Service {
   /** 获取角色列表*/
   async getRoles(condition: IndexCondition) {
     const fCondition = { ...defaultCondition, ...condition };
-    const { pageIndex, pageSize, select/* , populate */, customSort, find } = fCondition;
+    const { pageIndex, pageSize, select, customSort, find } = fCondition;
     const skip = (pageSize * (pageIndex - 1));
 
     const listRes = await this.ctx.model.PureRole
-      .find(find).select(select)/* .populate(populate) */
+      .find(find).select(select)
+      // .populate({ path: 'roleInfo', select: 'name -_id' })
+      // .populate({ path: 'deptInfo', select: 'name -_id' })
       .skip(skip)
       .limit(pageSize)
       .sort(customSort)
