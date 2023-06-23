@@ -99,19 +99,24 @@ export default class PureAccountService extends Service {
     const { user } = ctx.state;
     const userResp = await ctx.model.PureAccount
       .findById(user._id)
-      .select('nickname account email role dept id -_id')
-      .populate({ path: 'roleInfo', select: 'name menu -_id -roleValue' })
-      .populate({ path: 'deptInfo', select: 'name -id -_id' })
+      .select('nickname account email phone role dept id -_id')
+      .populate({ path: 'roleInfo', select: 'name code id -_id' })
+      .populate({ path: 'deptInfo', select: 'name id -_id' })
       .lean();
 
+    // console.log('_userResp', userResp);
     if (userResp) {
       const result = {
-        ...userResp,
-        ...(userResp as any).roleInfo,
-        ...(userResp as any).deptInfo,
+        account: userResp.account,
+        nickname: userResp.nickname,
+        email: userResp.email,
+        phone: userResp.phone,
+        roleId: (userResp as any).roleInfo.id,
+        roleCode: (userResp as any).roleInfo.code,
+        roleName: (userResp as any).roleInfo.name,
+        deptName: (userResp as any).deptInfo.name,
+        deptId: (userResp as any).deptInfo.id,
       };
-      delete result.roleInfo;
-      delete result.deptInfo;
       return result;
     }
   }
@@ -132,7 +137,7 @@ export default class PureAccountService extends Service {
       const menuIds = (currUser as any).roleInfo.menu;
       // console.log('_menuIds', menuIds);
       const menuResp = await ctx.model.PureMenu
-        .find({ id: { $in: menuIds }, status: '0', is_delete: '0' })
+        .find({ id: { $in: menuIds }, is_delete: '0', status: '0' })
         .select('-_id -_createdAt -_updatedAt -__v')
         .lean();
       // console.log('_menuResp', menuResp);
@@ -149,9 +154,9 @@ export default class PureAccountService extends Service {
           keepAlive: menuItem.keepAlive === '0',
           showLink: menuItem.showLink === '0',
           showParent: menuItem.showParent === '0',
-          roles: menuItem.roles,
+          // roles: menuItem.roles,
           auths: menuItem.auths,
-          hiddenTag: menuItem.hiddenTag === '0',
+          hiddenTag: menuItem.hiddenTag === '1',
           ...(menuItem.icon && { icon: menuItem.icon }),
         },
       }));

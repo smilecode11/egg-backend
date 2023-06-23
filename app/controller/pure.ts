@@ -1,6 +1,6 @@
 
 import { Controller } from 'egg';
-import pureMenuList from './datas/pureMenuList';
+// import pureMenuList from './datas/pureMenuList';
 export interface IndexCondition {
   pageIndex?: number;
   pageSize?: number;
@@ -15,26 +15,63 @@ export default class PureController extends Controller {
   async login() {
     const { ctx } = this;
     const { username, password } = ctx.request.body;
-    console.log('_login', username, password);
+    const token = await ctx.service.pureAccount.loginByAccount({ account: username, password });
+    if (token) {
+      ctx.helper.success({
+        ctx,
+        res: {
+          accessToken: token,
+        },
+        msg: '登录成功',
+      });
+    } else {
+      ctx.helper.fail({
+        ctx,
+        errorType: 'pureLoginCheckFail',
+      });
+    }
+
+    // ctx.helper.success({
+    //   ctx,
+    //   res: {
+    //     username: 'admin',
+    //     // 一个用户可能有多个角色
+    //     roles: ['admin'],
+    //     accessToken: 'eyJhbGciOiJIUzUxMiJ9.admin',
+    //     refreshToken: 'eyJhbGciOiJIUzUxMiJ9.adminRefresh',
+    //     expires: '2023/10/30 00:00:00',
+    //   },
+    // });
+  }
+  //  获取用户信息
+  async getUserInfo() {
+    const { ctx } = this;
+    // 获取用户信息
+    const infoResp = await ctx.service.pureAccount.getAccountInfo();
     ctx.helper.success({
       ctx,
       res: {
-        username: 'admin',
-        // 一个用户可能有多个角色
-        roles: ['admin'],
-        accessToken: 'eyJhbGciOiJIUzUxMiJ9.admin',
-        refreshToken: 'eyJhbGciOiJIUzUxMiJ9.adminRefresh',
-        expires: '2023/10/30 00:00:00',
+        ...infoResp,
+        roles: [],
       },
     });
   }
   //  根据用户角色返回动态路由
   async getAsyncRoutes() {
     const { ctx } = this;
-    ctx.helper.success({
-      ctx,
-      res: pureMenuList,
-    });
+    // console.log('_pureMenuList', pureMenuList);
+    // ctx.helper.success({ ctx, res: pureMenuList });
+    // return;
+
+    // 菜单基础数据构建
+    const menuList = await ctx.service.pureAccount.getAccountMenuList();
+    // 菜单层级构建
+    // console.log('_menuList', menuList);
+    const tree = getChild(getTop(menuList, 'parentMenu'), menuList, 'parentMenu', 'children'); // 获得菜单树
+    // 菜单排序
+    tree.sort((a, b) => b.meta.rank - a.meta.rank);
+    // console.log('_ getAccountMenuList resp', tree);
+    ctx.helper.success({ ctx, res: tree });
   }
   /** 创建角色*/
   async createRole() {
@@ -336,6 +373,8 @@ function getChild(pArry, arry, parentKey = 'parentMenu', childrenKey = 'children
     idt[childrenKey] = arry.filter(item => idt.id === item[parentKey]);
     if ((idt[childrenKey]).length > 0) {
       getChild(idt[childrenKey], arry, parentKey, childrenKey);
+    } else {
+      delete idt[childrenKey]; // pura 不允许存在 children 为[]且返回 children 字段属性
     }
   });
   return pArry;

@@ -2,14 +2,12 @@ import { Application } from 'egg';
 module.exports = (app: Application) => {
   const { controller, router } = app;
   // router.prefix('/vben/api'); //  指定路由前缀
-  // const jwt = app.jwt as any;
+  const jwt = app.jwt as any;
   router.post('/pureApi/login', controller.pure.login);
-  router.get('/pureApi/getAsyncRoutes', controller.pure.getAsyncRoutes);
-  //   router.get('/vben/api/logout', controller.vben.logout);
-  //   router.get('/vben/api/getUserInfo', jwt, controller.vben.getUserInfo);
+  router.post('/pureApi/getUserInfo', jwt, controller.pure.getUserInfo);
+  router.get('/pureApi/getAsyncRoutes', jwt, controller.pure.getAsyncRoutes);
   //   router.get('/vben/api/getPermCode', jwt, controller.vben.getPermCode); //  权限码
   //   router.get('/vben/api/getMenuList', jwt, controller.vben.getMenuList); //  菜单列表
-  //   router.post('/vben/api/utils/uploadImage', jwt, controller.utils.uploadToOSS); //  上传
   // 系统设置相关
   router.post('/pureApi/getRoleList', controller.pure.getRoleList);
   router.post('/pureApi/createRole', controller.pure.createRole); //  创建角色
@@ -34,5 +32,8 @@ module.exports = (app: Application) => {
   router.post('/pureApi/isAccountExist', controller.pure.isAccountExist); // 账号是否存在
   router.post('/pureApi/editPassword', controller.pure.editAccountPassword); // 修改密码
   router.post('/pureApi/getAccountMenuList', controller.pure.getAccountMenuList); //  获取账号菜单列表
+
+  // 工具接口
+  router.post('/pureApi/upload-img2', controller.utils.uploadToOSS); //  上传图片
 
 };
