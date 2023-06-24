@@ -99,7 +99,7 @@ export default class PureAccountService extends Service {
     const { user } = ctx.state;
     const userResp = await ctx.model.PureAccount
       .findById(user._id)
-      .select('nickname account email phone role dept id -_id')
+      .select('nickname account email phone role dept avatar id -_id')
       .populate({ path: 'roleInfo', select: 'name code id -_id' })
       .populate({ path: 'deptInfo', select: 'name id -_id' })
       .lean();
@@ -109,6 +109,7 @@ export default class PureAccountService extends Service {
       const result = {
         account: userResp.account,
         nickname: userResp.nickname,
+        avatar: userResp.avatar,
         email: userResp.email,
         phone: userResp.phone,
         roleId: (userResp as any).roleInfo.id,

@@ -30,7 +30,6 @@ export default class PureController extends Controller {
         errorType: 'pureLoginCheckFail',
       });
     }
-
     // ctx.helper.success({
     //   ctx,
     //   res: {
@@ -56,6 +55,54 @@ export default class PureController extends Controller {
       },
     });
   }
+  // 修改密码
+  async editAccountPassword() {
+    const { ctx } = this;
+    const { user } = ctx.state;
+    const { passwordOld, passwordNew } = ctx.request.body;
+    // 获取用户对比
+    const currUser = await ctx.model.PureAccount.findById(user._id);
+    // console.log('_currUser', currUser);
+    if (currUser) {
+      if (currUser.pwd === passwordOld) {
+        const resp = await ctx.model.PureAccount.findOneAndUpdate({ _id: user._id }, { pwd: passwordNew });
+        if (resp) ctx.helper.success({ ctx, res: { msg: '密码修改成功' } });
+      } else {
+        ctx.helper.fail({ ctx, errorType: 'pureAccountOriginPasswordFail' });
+      }
+    } else {
+      ctx.helper.fail({ ctx, errorType: 'pureInputValidateFail' });
+    }
+  }
+  //  修改头像
+  async editAvatar() {
+    const { ctx } = this;
+    const { user } = ctx.state;
+    const { avatar } = ctx.request.body;
+    // 获取用户对比
+    const currUser = await ctx.model.PureAccount.findById(user._id);
+    if (currUser) {
+      const resp = await ctx.model.PureAccount.findOneAndUpdate({ _id: user._id }, { avatar });
+      if (resp) ctx.helper.success({ ctx, res: { msg: '头像更新成功' } });
+    } else {
+      ctx.helper.fail({ ctx, errorType: 'pureInputValidateFail' });
+    }
+  }
+  //  修改用户信息
+  async updateUserInfo() {
+    const { ctx } = this;
+    const { user } = ctx.state;
+    const { nickname, phone, email } = ctx.request.body;
+    // 获取用户对比
+    const currUser = await ctx.model.PureAccount.findById(user._id);
+    if (currUser) {
+      const resp = await ctx.model.PureAccount.findOneAndUpdate({ _id: user._id }, { nickname, phone, email });
+      if (resp) ctx.helper.success({ ctx, res: { msg: '个人信息更新成功' } });
+    } else {
+      ctx.helper.fail({ ctx, errorType: 'pureInputValidateFail' });
+    }
+  }
+
   //  根据用户角色返回动态路由
   async getAsyncRoutes() {
     const { ctx } = this;
@@ -302,25 +349,6 @@ export default class PureController extends Controller {
         id: accountResp.id,
       },
     });
-  }
-  // 修改密码
-  async editAccountPassword() {
-    const { ctx } = this;
-    const { user } = ctx.state;
-    const { passwordOld, passwordNew } = ctx.request.body;
-    // 获取用户对比
-    const currUser = await ctx.model.pureAccount.findById(user._id);
-    // console.log('_currUser', currUser);
-    if (currUser) {
-      if (currUser.pwd === passwordOld) {
-        const resp = await ctx.model.pureAccount.findOneAndUpdate({ _id: user._id }, { pwd: passwordNew });
-        if (resp) ctx.helper.success({ ctx, res: { msg: '密码修改成功' } });
-      } else {
-        ctx.helper.fail({ ctx, errorType: 'pureAccountOriginPasswordFail' });
-      }
-    } else {
-      ctx.helper.fail({ ctx, errorType: 'vbenLoginCheckFail' });
-    }
   }
   //  删除账号
   async deleteAccount() {

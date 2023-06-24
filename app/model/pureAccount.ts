@@ -12,6 +12,7 @@ export interface PureAccountProps {
   email: string; // 账号邮箱
   remark?: string;
   status: '0' | '1'; // 0 表示启用 1 表示停用
+  avatar?: string; //  头像
   createdAt: Date;
   updatedAt: Date;
   is_delete: '0' | '1'; //  账号标识, 0 表示正常, 1 表示已删除
@@ -28,6 +29,7 @@ function initPureAccountModel(app: Application) {
     dept: { type: Number, requred: true },
     nickname: { type: String, requred: true },
     status: { type: String, default: '0' },
+    avatar: { type: String, default: '' },
     remark: { type: String },
     is_delete: { type: String, default: '0' },
   }, {
