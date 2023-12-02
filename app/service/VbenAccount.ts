@@ -18,6 +18,7 @@ export default class VbenAccountService extends Service {
   async createAccount(payload: VbenAccountProps) {
     const { ctx } = this;
     const { nickname, pwd, account, email, role, dept, remark, status } = payload;
+
     const VbenAccountCreateData: Partial<VbenAccountProps> = {
       nickname, pwd, account, email, role, dept,
       remark,
@@ -81,6 +82,7 @@ export default class VbenAccountService extends Service {
     const { app } = this;
     //  1. 检查用户是否存在
     const user = await this.findByAccount(account);
+    // console.log('_sever loginByAccount', user);
     //  2. 检查密码是否正确, 正确返回 token
     if (user && user.pwd === password) {
       // 存储用户信息在 jwt 中
@@ -100,7 +102,7 @@ export default class VbenAccountService extends Service {
     const userResp = await ctx.model.VbenAccount
       .findById(user._id)
       .select('nickname account email role dept id -_id')
-      .populate({ path: 'roleInfo', select: 'roleName menu -_id -roleValue' })
+      .populate({ path: 'roleInfo', select: 'roleName menu -_id' })
       .populate({ path: 'deptInfo', select: 'deptName -id -_id' })
       .lean();
 

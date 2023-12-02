@@ -1,6 +1,5 @@
-// This file is created by egg-ts-helper@1.34.5
+// This file is created by egg-ts-helper@1.33.0
 // Do not modify this file!!!!!!!!!
-/* eslint-disable */
 
 import 'egg';
 import ExportHome from '../../../app/controller/home';
@@ -13,6 +12,7 @@ import ExportWork from '../../../app/controller/work';
 import ExportDatasPureMenuList from '../../../app/controller/datas/pureMenuList';
 import ExportDatasVbenMenuAllList from '../../../app/controller/datas/vbenMenuAllList';
 import ExportDatasVbenMenuList from '../../../app/controller/datas/vbenMenuList';
+import ExportDatasVbenMenuList2 from '../../../app/controller/datas/vbenMenuList2';
 
 declare module 'egg' {
   interface IController {
@@ -27,6 +27,7 @@ declare module 'egg' {
       pureMenuList: ExportDatasPureMenuList;
       vbenMenuAllList: ExportDatasVbenMenuAllList;
       vbenMenuList: ExportDatasVbenMenuList;
+      vbenMenuList2: ExportDatasVbenMenuList2;
     }
   }
 }

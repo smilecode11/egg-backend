@@ -26,7 +26,7 @@ function initVbenMenuModel(app: Application) {
   const AutoIncrement = AutoIncrementFactory(app.mongoose);
   const VbenMenuSchema = new Schema<VbenMenuProps>({
     menuName: { type: String, required: true },
-    menuEnName: { type: String, required: true },
+    menuEnName: { type: String },
     type: { type: String, default: '0' },
     redirectRoutePath: { type: String },
     parentMenu: { type: Number, default: 0 },

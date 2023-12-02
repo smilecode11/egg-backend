@@ -31,6 +31,7 @@ export default class VbenRoleService extends Service {
   async setRoleStatus(payload: VbenRoleProps & { id: number }) {
     const { ctx } = this;
     const { id, status } = payload;
+    console.log('_setRoleStatus id', id, status);
     return ctx.model.VbenRole.findOneAndUpdate({ id }, { status }, { new: true }).lean();
   }
 

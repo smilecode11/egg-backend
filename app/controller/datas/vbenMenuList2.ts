@@ -71,7 +71,7 @@ export default [
       {
         path: 'account',
         name: 'AccountManagement',
-        component: '/system/account/index',
+        component: '/basics/system/account/index',
         meta: {
           title: '账号管理',
           ignoreKeepAlive: true,
@@ -81,7 +81,7 @@ export default [
       {
         path: 'account_detail/:id',
         name: 'AccountDetail',
-        component: '/system/account/AccountDetail',
+        component: '/basics/system/account/AccountDetail',
         meta: {
           hideMenu: true,
           title: '账号详情',
@@ -93,7 +93,7 @@ export default [
       {
         path: 'role',
         name: 'RoleManagement',
-        component: '/system/role/index',
+        component: '/basics/system/role/index',
         meta: {
           title: '角色管理',
           ignoreKeepAlive: true,
@@ -102,7 +102,7 @@ export default [
       {
         path: 'menu',
         name: 'MenuManagement',
-        component: '/system/menu/index',
+        component: '/basics/system/menu/index',
         meta: {
           title: '菜单管理',
           ignoreKeepAlive: true,
@@ -111,7 +111,7 @@ export default [
       {
         path: 'dept',
         name: 'DeptManagement',
-        component: '/system/dept/index',
+        component: '/basics/system/dept/index',
         meta: {
           title: '部门管理',
           ignoreKeepAlive: true,
@@ -120,7 +120,7 @@ export default [
       {
         path: 'changePassword',
         name: 'ChangePassword',
-        component: '/system/password/index',
+        component: '/basics/system/password/index',
         meta: {
           title: '修改密码',
           ignoreKeepAlive: true,

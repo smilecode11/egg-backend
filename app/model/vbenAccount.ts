@@ -41,7 +41,7 @@ function initVbenAccountModel(app: Application) {
   VbenAccountSchema.virtual('roleInfo', {
     ref: 'VbenRole',
     localField: 'role',
-    foreignField: 'roleValue',
+    foreignField: 'id',
     justOne: true,
   });
   VbenAccountSchema.virtual('deptInfo', {

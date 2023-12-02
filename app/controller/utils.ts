@@ -109,7 +109,7 @@ export default class UtilsController extends Controller {
     const urls: string[] = [];
     let part: FileStream | string[];
     while ((part = await parts())) {
-      console.log('_parts', part);
+      // console.log('_parts', part);
       if (Array.isArray(part)) {
         app.logger.info(part);
       } else {

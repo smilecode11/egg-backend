@@ -1,5 +1,6 @@
 import { Controller } from 'egg';
-import menuList from './datas/vbenMenuList';
+// import menuList from './datas/vbenMenuList';
+import menuList2 from './datas/vbenMenuList2';
 // import allMenuList from './datas/vbenMenuAllList';
 
 export const vbenErrorMessage = {
@@ -51,6 +52,7 @@ export default class VbenController extends Controller {
     const { ctx } = this;
     const { username: account, password } = ctx.request.body;
     const token = await ctx.service.vbenAccount.loginByAccount({ account, password });
+    // console.log('_controller login token', token);
     if (token) {
       ctx.helper.success({
         ctx,
@@ -118,6 +120,9 @@ export default class VbenController extends Controller {
     // 菜单排序
     tree.sort((a, b) => b.meta.orderNo - a.meta.orderNo);
     // console.log('_ getAccountMenuList resp', tree);
+
+    console.log('_menuList2', menuList2);
+    // const tree = menuList2;
     ctx.helper.success({ ctx, res: tree });
   }
 
@@ -142,9 +147,10 @@ export default class VbenController extends Controller {
   // 获取用户菜单
   async getMenuList() {
     const { ctx } = this;
+
     ctx.helper.success({
       ctx,
-      res: menuList,
+      res: menuList2,
     });
   }
 
@@ -154,7 +160,7 @@ export default class VbenController extends Controller {
     ctx.helper.success({
       ctx,
       res: {
-        perm_code: ['10001', '10002'],
+        perm_code: [ '10001', '10002' ],
         message: 'userinfo ok',
       },
     });
@@ -393,6 +399,12 @@ export default class VbenController extends Controller {
   async createAccount() {
     const { ctx } = this;
     try {
+
+      const user = await ctx.service.vbenAccount.findByAccount(ctx.request.body.account);
+      if (user) {
+        return ctx.helper.fail({ ctx, errorType: 'createUserExistsFail' });
+      }
+
       const accountResp = await ctx.service.vbenAccount.createAccount(ctx.request.body);
       ctx.helper.success({
         ctx, res: {
@@ -477,9 +489,20 @@ export default class VbenController extends Controller {
   //  账号是否存在
   async isAccountExist() {
     const { ctx } = this;
-    const { account } = ctx.request.body;
+    const { account, id } = ctx.request.body;
     const findResp = await ctx.model.VbenAccount.findOne({ account });
-    console.log('_findRes', findResp);
+    console.log('_isAccountExist', id, account);
+    if (id) {
+      const findResp2 = await ctx.model.VbenAccount.findOne({ id });
+      if (findResp2?.account === findResp?.account) {
+        ctx.helper.success({
+          ctx, res: {
+            message: 'ok',
+          },
+        });
+        return;
+      }
+    }
     if (findResp) {
       ctx.helper.fail({
         ctx, errorType: 'vbenAccountExistsFail',

@@ -7,7 +7,8 @@ module.exports = (app: Application) => {
   router.get('/vben/api/logout', controller.vben.logout);
   router.get('/vben/api/getUserInfo', jwt, controller.vben.getUserInfo);
   router.get('/vben/api/getPermCode', jwt, controller.vben.getPermCode); //  权限码
-  router.get('/vben/api/getMenuList', jwt, controller.vben.getMenuList); //  菜单列表
+  // router.get('/vben/api/getMenuList', jwt, controller.vben.getMenuList); //  菜单列表
+  router.get('/vben/api/getMenuList', jwt, controller.vben.getAccountMenuList); //  菜单列表
   router.post('/vben/api/utils/uploadImage', jwt, controller.utils.uploadToOSS); //  上传
   // 系统设置相关
   router.post('/vben/api/system/createRole', jwt, controller.vben.createRole); //  创建角色

@@ -126,11 +126,11 @@ export default class UserController extends Controller {
     //  2. 检查验证码是否正确
     const { phoneNumber, veriCode } = ctx.request.body;
     const preVeriCode = await app.redis.get(`phoneVeriCode-${phoneNumber}`);
-    console.log('_loginByCellphone preVeriCode', preVeriCode, veriCode);
+    // console.log('_loginByCellphone preVeriCode', preVeriCode, veriCode);
     if (preVeriCode !== veriCode) return ctx.helper.fail({ ctx, errorType: 'loginByCellphoneCheckFail' });
     //  3. 检查用户(手机号)是否注册, 返回 token
     const token = await this.service.user.loginByCellphone(phoneNumber);
-    console.log('_token', token);
+    // console.log('_token', token);
     ctx.helper.success({ ctx, res: { token } });
   }
 

@@ -57,7 +57,7 @@ export default function checkPermission(modelName: string | ModelMapping, errorT
       // const action = caslMethodMapping[method];
       //  如果自定义的 action, 则直接使用自定义的 action, 不再使用 caslMethodMapping 中的 action
       const action = options && options.action ? options.action : caslMethodMapping[method];
-      console.log('_action', action);
+      // console.log('_action', action);
       if (!ctx.state && !ctx.state.user) {
         return ctx.helper.error({ ctx, errorType });
       }
